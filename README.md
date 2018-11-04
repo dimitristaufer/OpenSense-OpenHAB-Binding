@@ -1,6 +1,6 @@
 # OpenSense.network <-> openHab
 
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/dimitristaufer/opensense-sh-bindings.svg?columns=all)](https://waffle.io/dimitristaufer/opensense-sh-bindings)
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/dimitristaufer/opensense-openhab-master.svg?columns=all)](https://waffle.io/dimitristaufer/opensense-openhab-master)
 
 ![alt text](https://dimitristaufer.com/files/OpenSense_Banner-min.jpg)
 
