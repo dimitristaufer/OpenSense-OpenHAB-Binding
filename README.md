@@ -1,4 +1,4 @@
-# OpenSense.network openHab and Home Assistant Bindings
+# OpenSense.network openHab Binding
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/dimitristaufer/opensense-sh-bindings.svg?columns=all)](https://waffle.io/dimitristaufer/opensense-sh-bindings)
 
