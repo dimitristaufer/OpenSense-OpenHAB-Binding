@@ -4,7 +4,7 @@
 
 ![alt text](https://dimitristaufer.com/files/OpenSense_Banner-min.jpg)
 
-An attempt to extent the [OpenSense.network](https://www.opensense.network "OpenSense Network's Homepage") by implementing bidirectional bindings with OpenHab and Home Assistant, two of the most popular Smart Home platforms.
+An attempt to extent the [OpenSense.network](https://www.opensense.network "OpenSense Network's Homepage") by implementing bidirectional bindings with OpenHab, onr of the most popular Smart Home platforms.
 
 # OpenSense.network -> openHab 
 
