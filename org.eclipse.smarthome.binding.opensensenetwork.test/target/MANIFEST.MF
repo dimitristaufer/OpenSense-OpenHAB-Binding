@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.eclipse.smarthome.binding.opensensenetwork.
+ test
+Bundle-SymbolicName: org.eclipse.smarthome.binding.opensensenetwork.te
+ st;singleton:=true
+Export-Package: org.eclipse.smarthome.binding.opensensenetwork;uses:="
+ org.eclipse.smarthome.test"
+Bundle-Name: OpenSenseNetwork Binding Tests
+Bundle-Version: 0.10.0.201811040950
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Eclipse.org/SmartHome
+Import-Package: org.eclipse.jdt.annotation;resolution:=optional,org.ec
+ lipse.smarthome.core.common.registry,org.eclipse.smarthome.core.event
+ s,org.eclipse.smarthome.core.thing,org.eclipse.smarthome.core.thing.b
+ inding,org.eclipse.smarthome.core.thing.binding.builder,org.eclipse.s
+ marthome.core.thing.util,org.eclipse.smarthome.test.java,org.eclipse.
+ smarthome.test.storage,org.hamcrest;core=split,org.hamcrest.core,org.
+ junit;version="4.0.0",org.mockito,org.mockito.invocation,org.mockito.
+ stubbing,org.osgi.framework,org.osgi.service.device,org.slf4j
+Fragment-Host: org.eclipse.smarthome.binding.opensensenetwork
+
