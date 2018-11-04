@@ -1,5 +1,4 @@
-# opensense-sh-bindings
-# Test
+# OpenSense.network SmartHome Bindings
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/dimitristaufer/opensense-sh-bindings.svg?columns=all)](https://waffle.io/dimitristaufer/opensense-sh-bindings)
 
