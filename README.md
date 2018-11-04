@@ -10,6 +10,6 @@ An attempt to extent the [OpenSense.network](https://www.opensense.network "Open
 
 # openHab -> OpenSense.network 
 
-# OpenSense.network <-> openHab
+# Things
 
 All add-ons for openHAB 2 are part of the distribution. This includes all new 2.x bindings as well as all 1.x add-ons that were reported to be compatible. Add-ons can be easily installed through the Paper UI (menu entry "Add-ons").
