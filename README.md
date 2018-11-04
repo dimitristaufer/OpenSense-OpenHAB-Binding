@@ -4,12 +4,16 @@
 
 ![alt text](https://dimitristaufer.com/files/OpenSense_Banner-min.jpg)
 
-An attempt to extent the [OpenSense.network](https://www.opensense.network "OpenSense Network's Homepage") by implementing bidirectional bindings with OpenHab, onr of the most popular Smart Home platforms.
+An attempt to extent the [OpenSense.network](https://www.opensense.network "OpenSense Network's Homepage") by implementing bidirectional bindings with [openHab](https://www.openhab.org "openHab's Homepage"), onr of the most popular Smart Home platforms.
 
 # OpenSense.network -> openHab 
 
+We will explain a set of features here.
+
 # openHab -> OpenSense.network 
+
+We will explain a set of features here.
 
 # Things
 
-All add-ons for openHAB 2 are part of the distribution. This includes all new 2.x bindings as well as all 1.x add-ons that were reported to be compatible. Add-ons can be easily installed through the Paper UI (menu entry "Add-ons").
+Things are the entities that can physically be added to a system and which can potentially provide many functionalities in one. It is important to note that Things do not have to be devices, but they can also represent a web service or any other manageable source of information and functionality. From a user perspective, they are relevant for the setup and configuration process, but not for the operation.
