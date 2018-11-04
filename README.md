@@ -1,16 +1,16 @@
-# OpenSense.network ❤️ openHab
+# OpenSense.network ❤️ openHAB
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/dimitristaufer/opensense-openhab-master.svg?columns=all)](https://waffle.io/dimitristaufer/opensense-openhab-master)
 
 ![alt text](https://dimitristaufer.com/files/OpenSense_Banner-min.jpg)
 
-An attempt to extent the [OpenSense.network](https://www.opensense.network "OpenSense Network's Homepage") by implementing bidirectional bindings with [openHab](https://www.openhab.org "openHab's Homepage"), onr of the most popular Smart Home platforms.
+An attempt to extent the [OpenSense.network](https://www.opensense.network "OpenSense Network's Homepage") by implementing bidirectional bindings with [openHAB](https://www.openhab.org "openHAB's Homepage"), one of the most popular Smart Home platforms.
 
-# OpenSense.network -> openHab 
+# OpenSense.network -> openHAB 
 
 We will explain a set of features here.
 
-# openHab -> OpenSense.network 
+# openHAB -> OpenSense.network 
 
 We will explain a set of features here.
 
