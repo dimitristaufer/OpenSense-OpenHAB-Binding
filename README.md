@@ -10,7 +10,7 @@ An attempt to extent [ISE's](http://www.ise.tu-berlin.de/menue/information_syste
 
 We will explain a set of features here.
 
-# openHAB -> OpenSense.network 
+# openHAB 👈 OpenSense.network 
 
 We will explain a set of features here.
 
