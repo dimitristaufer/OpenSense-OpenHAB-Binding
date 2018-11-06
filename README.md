@@ -16,11 +16,23 @@ Besonders im Frühjahr leide ich stark unter meiner Pollenallergie. In meiner Wo
 Ich bin auf der Suche nach einer automatisierten Lösung, die den Luftstrom reguliert, je nach dem ob die Belastung der Pollenart, auf die ich allergisch reagiere, hoch oder niedrig ist.
 —> Über das OpenSense Binding im OpenSense Dashboard kann der Nutzer/die Nutzerin angeben, auf welche Pollenarten er/sie allergisch reagiert. Das Binding ruft die notwendigen Daten im OpenSense Netzwerk ab und steuert den Luftreiniger vollautomatisch über die Bindings der jeweiligen Hersteller.
 
+Which measurements can OpenSense provide to openHAB?
+
+* Unordered list item
+* Unordered list item
+* Unordered list item
+
 # openHAB 👉 OpenSense.network 
 
 User Story1:
 Aufgrund meiner Arbeit werde ich zu beginn des kommenden Jahres in eine Großstadt ziehen. Bei der Wohnungssuche fällt es mir schwer herauszufinden unter welcher Lärmbelästigung spezifische Stadtgebiete und Wohnungsblocks leiden. Baulärm, Hundegebell, Diskotheken und Verkehrslärm. Ich bin sehr lärmempfindlich und suche nach einer einfachen Möglichkeit, die Lärmbelästigung für eine bestimmte Wohnung einzusehen.
 -> viele Wetterstationen, wie beispielsweise die NWS01-EC Netatmo Weather Station messen mit einem Sonometer alle 5 Minuten die Lautstärke in einem Bereich von 35 dB bis 120 dB. Diese Werte können über das Netatmo openHAB Binding abgerufen werden und in das OpenSense Netzwerk eingespeist werden.
+
+Which openHAB things can provide which measurements to OpenSense?
+
+* Unordered list item
+* Unordered list item
+* Unordered list item
 
 # Things
 
