@@ -36,4 +36,10 @@ Which openHAB things can provide which measurements to OpenSense?
 
 # Things
 
-Things are the entities that can physically be added to a system and which can potentially provide many functionalities in one. It is important to note that Things do not have to be devices, but they can also represent a web service or any other manageable source of information and functionality. From a user perspective, they are relevant for the setup and configuration process, but not for the operation.
+> Things are the entities that can physically be added to a system and which can potentially provide many functionalities in one. It is important to note that Things do not have to be devices, but they can also represent a web service or any other manageable source of information and functionality. From a user perspective, they are relevant for the setup and configuration process, but not for the operation.
+
+# Roadmap
+
+* Unordered list item
+* Unordered list item
+* Unordered list item
