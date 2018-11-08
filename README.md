@@ -44,3 +44,4 @@ Which openHAB things can provide which measurements to OpenSense?
 
 
 P.S. Test, ob es bei mir funktioniert. Max
+Test R
