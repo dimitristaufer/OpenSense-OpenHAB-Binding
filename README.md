@@ -40,3 +40,7 @@ Which openHAB things can provide which measurements to OpenSense?
 * Unordered list item
 * Unordered list item
 * Unordered list item
+
+
+
+P.S. Test, ob es bei mir funktioniert. Max
