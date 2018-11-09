@@ -5,8 +5,9 @@
 ![alt text](https://dimitristaufer.com/files/OpenSense_Banner-min.jpg)
 
 An attempt to extent [ISE's](http://www.ise.tu-berlin.de/menue/information_systems_engineering/ "TU-Berlin ISE Homepage") [OpenSense.network](https://www.opensense.network "OpenSense Network's Homepage") by implementing bidirectional bindings with [openHAB](https://www.openhab.org "openHAB's Homepage"), one of the most popular Smart Home platforms.
-
+#ManishaTest
 # OpenSense.network 👉 openHAB 
+ReadMe Manisha
 
 Example #1: Ich wohne in einer Großstadt. Es ist daher für meine Gesundheit wichtig, mehrmals täglich meine Wohnung zu lüften. Die Stickoxidwerte in der Luft sind über den Tag verteilt sehr unterschiedlich. Daher gibt es bestimmte Uhrzeiten, an denen es sich überhaupt nicht lohnt zu lüften und anderen, an denen es sinnvoll wäre zu lüften. Ich suche nach einem “Thing” für mein openHAB System, welches mir in meinem Dashboard grafisch darstellt, wie sich die Stickoxidwerte über den Tag verteilt verändern. Auf diese Weise kann ich gezielter lüften und muss mir keine Gedanken über die Luftverschmutzung mehr machen.
 
