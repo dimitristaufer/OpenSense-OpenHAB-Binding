@@ -12,14 +12,12 @@
  */
 package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
-import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.*;
-
-import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkHandler;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
@@ -37,7 +35,9 @@ import org.osgi.service.component.annotations.Component;
 @Component(configurationPid = "binding.opensensenetwork", service = ThingHandlerFactory.class)
 public class OpenSenseNetworkHandlerFactory extends BaseThingHandlerFactory {
 
-    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(THING_TYPE_SAMPLE);
+    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Stream
+            .of(OpenSenseNetworkBindingConstants.SUPPORTED_THING_TYPES_UIDS).flatMap(x -> x.stream())
+            .collect(Collectors.toSet());
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
@@ -48,7 +48,11 @@ public class OpenSenseNetworkHandlerFactory extends BaseThingHandlerFactory {
     protected @Nullable ThingHandler createHandler(Thing thing) {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
-        if (THING_TYPE_SAMPLE.equals(thingTypeUID)) {
+        if (OpenSenseNetworkBindingConstants.THING_TYPE_WEATHER.equals(thingTypeUID)) {
+            return new OpenSenseNetworkHandler(thing);
+        }
+
+        if (OpenSenseNetworkBindingConstants.THING_TYPE_ENVIRONMENT.equals(thingTypeUID)) {
             return new OpenSenseNetworkHandler(thing);
         }
 

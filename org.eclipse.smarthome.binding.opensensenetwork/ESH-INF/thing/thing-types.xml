@@ -4,14 +4,21 @@
 	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
-	<!-- Sample Thing Type -->
-	<thing-type id="sample">
-		<label>OpenSenseNetwork Binding Thing</label>
-		<description>Sample thing for OpenSenseNetwork Binding</description>
+	<thing-type id="weather">
+		<label>OpenSense Temperature</label>
+		<description>Temperature readings from OpenSense Network</description>
 
-		<channels>
-			<channel id="channel1" typeId="sample-channel" />
-		</channels>
+		 <channel-groups>
+            <channel-group id="temperature" typeId="temperature">
+                <label>Sample Temperature Label</label>
+                <description>Sample Temperature Description</description>
+            </channel-group>
+            <channel-group id="humidity" typeId="humidity">
+                <label>Sample Humidity Label</label>
+                <description>Sample Humidity Description</description>
+            </channel-group>
+        </channel-groups>
+   
 
 		<config-description>
 			<parameter name="config1" type="text" required="true">
@@ -21,12 +28,63 @@
 		</config-description>
 
 	</thing-type>
+	
+	<thing-type id="environment">
+        <label>OpenSense Environment</label>
+        <description>Environment readings from OpenSense Network</description>
 
-	<!-- Sample Channel Type -->
-	<channel-type id="sample-channel">
-		<item-type>opensensenetworkItem</item-type>
-		<label>OpenSenseNetwork Binding Channel</label>
-		<description>Sample channel for OpenSenseNetwork Binding</description>
-	</channel-type>
+        <config-description>
+            <parameter name="config1" type="text" required="true">
+                <label>Sample parameter</label>
+                <description>This is a sample text configuration parameter.</description>
+            </parameter>
+        </config-description>
+
+    </thing-type>
+
+
+    <channel-group-type id="temperature">
+        <label>Current Weather</label>
+        <description>This is the current weather</description>
+        <channels>
+            <channel id="location" typeId="location" /> <!-- typeId is specified bellow -->
+            <channel id="stationId" typeId="stationId" /> <!-- typeId is specified bellow -->
+            <channel id="observationTime" typeId="observationTime" /> <!-- typeId is specified bellow -->
+            <channel id="value" typeId="system.outdoor-temperature" /> <!-- typeId is system wide -->
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="humidity">
+        <label>Current Weather</label>
+        <description>This is the current weather</description>
+        <channels>
+            <channel id="location" typeId="location" /> <!-- typeId is specified bellow -->
+            <channel id="stationId" typeId="stationId" /> <!-- typeId is specified bellow -->
+            <channel id="observationTime" typeId="observationTime" /> <!-- typeId is specified bellow -->
+            <channel id="value" typeId="system.atmospheric-humidity" /> <!-- typeId is system wide -->
+        </channels>
+    </channel-group-type>
+    
+
+    <channel-type id="location" advanced="true">
+        <item-type>String</item-type>
+        <label>Observation Location</label>
+        <description>Weather observation location</description>
+        <state readOnly="true" pattern="%s"></state>
+    </channel-type>
+
+    <channel-type id="stationId" advanced="true">
+        <item-type>String</item-type>
+        <label>Station Id</label>
+        <description>Weather station identifier</description>
+        <state readOnly="true" pattern="%s"></state>
+    </channel-type>
+
+    <channel-type id="observationTime" advanced="true">
+        <item-type>DateTime</item-type>
+        <label>Observation Time</label>
+        <description>Observation date and time</description>
+        <state readOnly="true"></state>
+    </channel-type>
 
 </thing:thing-descriptions>

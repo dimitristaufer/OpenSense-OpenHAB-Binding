@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
 
 	<name>OpenSenseNetwork Binding</name>
-	<description>This is the binding for OpenSenseNetwork.</description>
+	<description>This binding provides a link between the OpenSense network and many devices supported by openHAB. Further description is necessary.</description>
 	<author>ISE</author>
 
 </binding:binding>
