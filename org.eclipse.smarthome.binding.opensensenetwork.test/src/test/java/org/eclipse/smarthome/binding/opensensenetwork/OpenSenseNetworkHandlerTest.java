@@ -39,6 +39,7 @@ import org.mockito.Mock;
 public class OpenSenseNetworkHandlerTest extends JavaTest {
 
     private ThingHandler handler;
+    private String Test;
 
     @Mock
     private ThingHandlerCallback callback;
@@ -57,7 +58,7 @@ public class OpenSenseNetworkHandlerTest extends JavaTest {
     public void initializeShouldCallTheCallback() {
         // mock getConfiguration to prevent NPEs
         when(thing.getConfiguration()).thenReturn(new Configuration());
-        
+
         // we expect the handler#initialize method to call the callback during execution and
         // pass it the thing and a ThingStatusInfo object containing the ThingStatus of the thing.
         handler.initialize();
@@ -70,18 +71,16 @@ public class OpenSenseNetworkHandlerTest extends JavaTest {
         waitForAssert(() -> {
             verify(callback, times(2)).statusUpdated(eq(thing), statusInfoCaptor.capture());
         });
-        
+
         // assert that the (temporary) UNKNOWN status was given first:
         assertThat(statusInfoCaptor.getAllValues().get(0).getStatus(), is(ThingStatus.UNKNOWN));
-        
-        
+
         // assert that ONLINE status was given later:
         assertThat(statusInfoCaptor.getAllValues().get(1).getStatus(), is(ThingStatus.ONLINE));
 
-        
-        // See the documentation at 
-        // https://www.eclipse.org/smarthome/documentation/development/testing.html#assertions 
-        // to see when to use Hamcrest assertions (assertThat) or JUnit assertions. 
+        // See the documentation at
+        // https://www.eclipse.org/smarthome/documentation/development/testing.html#assertions
+        // to see when to use Hamcrest assertions (assertThat) or JUnit assertions.
     }
-    
+
 }
