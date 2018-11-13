@@ -5,8 +5,8 @@
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
 	<thing-type id="weather">
-		<label>OpenSense Temperature</label>
-		<description>Temperature readings from OpenSense Network</description>
+		<label>OpenSense Weather</label>
+		<description>Weather readings from OpenSense Network</description>
 
 		 <channel-groups>
             <channel-group id="temperature" typeId="temperature">
@@ -21,10 +21,14 @@
    
 
 		<config-description>
-			<parameter name="config1" type="text" required="true">
-				<label>Sample parameter</label>
-				<description>This is a sample text configuration parameter.</description>
+			<parameter name="location" type="text" required="true">
+				<label>Location</label>
+				<description>This is your location based on your IP-address.</description>
 			</parameter>
+			<parameter name="Test Bool" type="boolean" required="false">
+                <label>Test Bool</label>
+                <description>This description should not confuse you.</description>
+            </parameter>
 		</config-description>
 
 	</thing-type>
@@ -32,13 +36,6 @@
 	<thing-type id="environment">
         <label>OpenSense Environment</label>
         <description>Environment readings from OpenSense Network</description>
-
-        <config-description>
-            <parameter name="config1" type="text" required="true">
-                <label>Sample parameter</label>
-                <description>This is a sample text configuration parameter.</description>
-            </parameter>
-        </config-description>
 
     </thing-type>
 

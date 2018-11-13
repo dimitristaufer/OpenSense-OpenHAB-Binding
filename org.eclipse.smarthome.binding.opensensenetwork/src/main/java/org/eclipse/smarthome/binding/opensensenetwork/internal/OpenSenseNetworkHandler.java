@@ -12,16 +12,20 @@
  */
 package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
+import javax.measure.quantity.Dimensionless;
+import javax.measure.quantity.Temperature;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.smarthome.core.library.types.QuantityType;
+import org.eclipse.smarthome.core.library.unit.SIUnits;
+import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
-import org.eclipse.smarthome.core.types.State; // Import State type
-import org.eclipse.smarthome.core.types.UnDefType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,14 +47,50 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
         super(thing);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-        if (command instanceof RefreshType) {
 
-            boolean dataDownloaded = getSampleData();
+        String bindingID = channelUID.getThingUID().getThingTypeUID().getBindingId();
+        /* equals "opensensenetwork" */
+        String channel_group = channelUID.getGroupId();
+        /* ex. "temperature" */
+        String thingUID = channelUID.getThingUID().getId();
+        /* ex. "2dd327f6" */
+        String thingTypeID = channelUID.getThingUID().getThingTypeUID().getId();
+        /* ex. "weather" or "environment" */
+
+        if (command instanceof RefreshType) { /*
+                                               * What kind of type is the command? RefreshType means, the value is
+                                               * being accessed via GET for example to be displayed in the PaperUI
+                                               */
+
+            boolean dataDownloaded = getSampleData(); /*
+                                                       * We will have to put some more thought into the data structures
+                                                       * (as seen in Waffle.io)
+                                                       */
             if (dataDownloaded) {
 
-                /* TODO: Add Switch Case for different channels -> Have a look at WeatherUndergroundHandler */
+                /* For now, let's just assume the data is already available */
+
+                if (thingTypeID.equals("weather")) {
+
+                    switch (channel_group) {
+                        case "temperature":
+                            QuantityType<Temperature> temperature = new QuantityType<Temperature>(23.0,
+                                    SIUnits.CELSIUS);
+                            updateState(channelUID, temperature);
+                        case "humidity":
+                            QuantityType<Dimensionless> humidity = new QuantityType<Dimensionless>(65.6,
+                                    SmartHomeUnits.PERCENT);
+                            updateState(channelUID, humidity);
+                        default:
+                            logger.debug("Unknown Channel (Not sure if this could ever happen)", channel_group);
+                    }
+
+                } else if (thingTypeID.equals("environment")) {
+                    /* do nothing yet */
+                }
 
             }
 
@@ -62,14 +102,6 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     private synchronized boolean getSampleData() { // Get sample data from OpenSense
         return true;
-    }
-
-    private State getTemperature() {
-        return UnDefType.UNDEF;
-    }
-
-    private State getHumidity() {
-        return UnDefType.UNDEF;
     }
 
     @Override
@@ -100,6 +132,8 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                 updateStatus(ThingStatus.OFFLINE);
             }
         });
+
+        updateStatus(ThingStatus.ONLINE);
 
         logger.debug("Finished initializing!");
 
