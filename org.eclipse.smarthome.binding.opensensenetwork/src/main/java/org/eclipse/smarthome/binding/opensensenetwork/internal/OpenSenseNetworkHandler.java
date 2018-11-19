@@ -29,6 +29,13 @@ import org.eclipse.smarthome.core.types.RefreshType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.async.Callback;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
 /**
  * The {@link OpenSenseNetworkHandler} is responsible for handling commands, which are
  * sent to one of the channels.
@@ -65,10 +72,12 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                                                * being accessed via GET for example to be displayed in the PaperUI
                                                */
 
-            boolean dataDownloaded = getSampleData(); /*
-                                                       * We will have to put some more thought into the data structures
-                                                       * (as seen in Waffle.io)
-                                                       */
+            System.out.println("calling sample data");
+
+            boolean dataDownloaded = getSampleData(channelUID, command);
+
+            findSensor(49.1259, 9.1428, 50000);
+
             if (dataDownloaded) {
 
                 /* For now, let's just assume the data is already available */
@@ -100,7 +109,50 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     }
 
-    private synchronized boolean getSampleData() { // Get sample data from OpenSense
+    private void findSensor(double lt, double lg, int md) {
+
+        String refPoint = String.format("(%f,%f)", lt, lg);
+        String maxDistance = String.format("%d", md);
+
+        System.out.println(refPoint);
+        System.out.println(maxDistance);
+
+        Unirest.get("https://www.opensense.network/progprak/beta/api/v1.0/sensors").queryString("measurandId", "7")
+                .queryString("refPoint", refPoint).queryString("maxDistance", maxDistance)
+                .queryString("maxSensors", "1").asJsonAsync(new Callback<JsonNode>() {
+
+                    @Override
+                    public void failed(@Nullable UnirestException e) {
+                        System.out.println("The request has failed");
+                    }
+
+                    @Override
+                    public void completed(@Nullable HttpResponse<JsonNode> response) {
+                        JsonNode body = response.getBody();
+                        System.out.println(body.toString());
+
+                        Gson gson = new Gson();
+                        OSSensor sensor = gson.fromJson(body.toString(), OSSensor.class);
+
+                        System.out.println(sensor.toString());
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        System.out.println("The request has been cancelled");
+                    }
+
+                });
+
+        // OSSensor sensor = new OSSensor(id, userId, measurandId, location, altitudeAboveGround, directionVertical,
+        // directionHorizontal, sensorModel, accuracy, attributionText, attributionURL, licenseId);
+
+    }
+
+    private boolean getSampleData(ChannelUID channelUID, Command command) { // Get sample data from OpenSense
+
+        System.out.println("yoo");
+
         return true;
     }
 

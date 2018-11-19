@@ -1,7 +1,24 @@
 Manifest-Version: 1.0
 Automatic-Module-Name: org.eclipse.smarthome.binding.opensensenetwork
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ Libraries/httpasyncclient-4.1.4.jar,
+ Libraries/httpclient-4.5.6.jar,
+ Libraries/httpmime-4.5.6.jar,
+ Libraries/json-20180813.jar,
+ Libraries/unirest-java-1.4.9.jar,
+ Libraries/httpcore-4.4.10.jar,
+ Libraries/commons-cli-1.2.jar,
+ Libraries/commons-codec-1.10.jar,
+ Libraries/commons-logging-1.2.jar,
+ Libraries/fluent-hc-4.5.6.jar,
+ Libraries/httpasyncclient-cache-4.1.4.jar,
+ Libraries/httpclient-cache-4.5.6.jar,
+ Libraries/httpclient-win-4.5.6.jar,
+ Libraries/httpcore-ab-4.4.10.jar,
+ Libraries/httpcore-nio-4.4.10.jar,
+ Libraries/jna-4.4.0.jar,
+ Libraries/jna-platform-4.4.0.jar
 Bundle-ManifestVersion: 2
 Bundle-Name: OpenSenseNetwork Binding
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -9,6 +26,7 @@ Bundle-SymbolicName: org.eclipse.smarthome.binding.opensensenetwork;singleton:=t
 Bundle-Vendor: Eclipse.org/SmartHome
 Bundle-Version: 0.10.0.qualifier
 Import-Package: 
+ com.google.gson;version="2.7.0",
  javax.measure.quantity;version="1.0.0",
  org.eclipse.jdt.annotation;resolution:=optional,
  org.eclipse.smarthome.config.core,
