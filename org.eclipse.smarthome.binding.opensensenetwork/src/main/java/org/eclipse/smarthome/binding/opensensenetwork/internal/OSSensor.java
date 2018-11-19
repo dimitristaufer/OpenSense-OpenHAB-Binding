@@ -4,18 +4,18 @@ import java.util.Dictionary;
 
 public class OSSensor {
 
-    private final int id;
-    private final int userId;
-    private final int measurandId;
-    private final Dictionary<String, Double> location;
-    private final double altitudeAboveGround;
-    private final double directionVertical;
-    private final double directionHorizontal;
-    private final String sensorModel;
-    private final int accuracy;
-    private final String attributionText;
-    private final String attributionURL;
-    private final int licenseId;
+    private int id;
+    private int userId;
+    private int measurandId;
+    private Dictionary<String, Double> location;
+    private double altitudeAboveGround;
+    private double directionVertical;
+    private double directionHorizontal;
+    private String sensorModel;
+    private int accuracy;
+    private String attributionText;
+    private String attributionURL;
+    private int licenseId;
 
     public OSSensor(int id, int userId, int measurandId, Dictionary<String, Double> location,
             double altitudeAboveGround, double directionVertical, double directionHorizontal, String sensorModel,
@@ -34,6 +34,10 @@ public class OSSensor {
         this.attributionURL = attributionURL;
         this.licenseId = licenseId;
 
+    }
+    
+    public int id () {
+        return this.id;
     }
 
 }

@@ -76,8 +76,11 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
             boolean dataDownloaded = getSampleData(channelUID, command);
 
+            
             findSensor(49.1259, 9.1428, 50000);
 
+            
+            
             if (dataDownloaded) {
 
                 /* For now, let's just assume the data is already available */
@@ -135,6 +138,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                         OSSensor sensor = gson.fromJson(body.toString(), OSSensor.class);
 
                         System.out.println(sensor.toString());
+
                     }
 
                     @Override
