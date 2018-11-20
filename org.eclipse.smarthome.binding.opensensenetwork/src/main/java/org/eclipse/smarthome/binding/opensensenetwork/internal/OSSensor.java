@@ -1,25 +1,64 @@
 package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
-import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.json.JSONObject;
 
 public class OSSensor {
 
-    private final int id;
-    private final int userId;
-    private final int measurandId;
-    private final Dictionary<String, Double> location;
-    private final double altitudeAboveGround;
-    private final double directionVertical;
-    private final double directionHorizontal;
-    private final String sensorModel;
-    private final int accuracy;
-    private final String attributionText;
-    private final String attributionURL;
-    private final int licenseId;
+    private int id;
+    private int userId;
+    private int measurandId;
+    private Map<String, Double> location;
+    private double altitudeAboveGround;
+    private double directionVertical;
+    private double directionHorizontal;
+    private String sensorModel;
+    private int accuracy;
+    private String attributionText;
+    private String attributionURL;
+    private int licenseId;
 
-    public OSSensor(int id, int userId, int measurandId, Dictionary<String, Double> location,
-            double altitudeAboveGround, double directionVertical, double directionHorizontal, String sensorModel,
-            int accuracy, String attributionText, String attributionURL, int licenseId) {
+    public OSSensor(int id, int userId, int measurandId, Map<String, Double> location, double altitudeAboveGround,
+            double directionVertical, double directionHorizontal, String sensorModel, int accuracy,
+            String attributionText, String attributionURL, int licenseId) {
+
+        this.id = id;
+        this.userId = userId;
+        this.measurandId = measurandId;
+        this.location = location;
+        this.altitudeAboveGround = altitudeAboveGround;
+        this.directionVertical = directionVertical;
+        this.directionHorizontal = directionHorizontal;
+        this.sensorModel = sensorModel;
+        this.accuracy = accuracy;
+        this.attributionText = attributionText;
+        this.attributionURL = attributionURL;
+        this.licenseId = licenseId;
+
+    }
+
+    public OSSensor() {
+        // Empty Init
+    }
+
+    public void initSensor(JSONObject json) {
+
+        int id = Optional.ofNullable(json.getInt("id")).orElse(0);
+        int userId = Optional.ofNullable(json.getInt("userId")).orElse(0);
+        int measurandId = Optional.ofNullable(0).orElse(0);
+        Map<String, Double> location = new HashMap<String, Double>();
+        location = Optional.ofNullable(location).orElse(location);
+        double altitudeAboveGround = Optional.ofNullable(0).orElse(0);
+        double directionVertical = Optional.ofNullable(0).orElse(0);
+        double directionHorizontal = Optional.ofNullable(0).orElse(0);
+        String sensorModel = Optional.ofNullable("").orElse("");
+        int accuracy = Optional.ofNullable(0).orElse(0);
+        String attributionText = Optional.ofNullable("").orElse("");
+        String attributionURL = Optional.ofNullable(json.getString("attributionURL")).orElse("");
+        int licenseId = Optional.ofNullable(0).orElse(0);
 
         this.id = id;
         this.userId = userId;
@@ -40,22 +79,48 @@ public class OSSensor {
         return this.id;
     }
 
-}
+    public int userId() {
+        return this.userId;
+    }
 
-//
-// "id": 2,
-// "userId": 3,
-// "measurandId": 7,
-// "unitId": 12,
-// "location": {
-// "lat": 49.1259,
-// "lng": 9.1428
-// },
-// "altitudeAboveGround": 2.0,
-// "directionVertical": 0,
-// "directionHorizontal": 0,
-// "sensorModel": "DWD station",
-// "accuracy": 10,
-// "attributionText": "Deutscher Wetterdienst (DWD)",
-// "attributionURL": "ftp://ftp-cdc.dwd.de/pub/CDC/",
-// "licenseId": 4
+    public int measurandId() {
+        return this.measurandId;
+    }
+
+    public Map<String, Double> location() {
+        return this.location;
+    }
+
+    public double altitudeAboveGround() {
+        return this.altitudeAboveGround;
+    }
+
+    public double directionVertical() {
+        return this.directionVertical;
+    }
+
+    public double directionHorizontal() {
+        return this.directionHorizontal;
+    }
+
+    public String sensorModel() {
+        return this.sensorModel;
+    }
+
+    public int accuracy() {
+        return this.accuracy;
+    }
+
+    public String attributionText() {
+        return this.attributionText;
+    }
+
+    public String attributionURL() {
+        return this.attributionURL;
+    }
+
+    public int licenseId() {
+        return this.licenseId;
+    }
+
+}

@@ -42,4 +42,8 @@ public class OpenSenseNetworkBindingConstants {
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = new HashSet<>(
             Arrays.asList(THING_TYPE_WEATHER, THING_TYPE_ENVIRONMENT));
 
+    public static final String OS_VALUE_URL = "https://www.opensense.network/progprak/beta/api/v1.0/values";
+    public static final String TEMP_ID = "1";
+    public static final String HUMI_ID = "3";
+
 }

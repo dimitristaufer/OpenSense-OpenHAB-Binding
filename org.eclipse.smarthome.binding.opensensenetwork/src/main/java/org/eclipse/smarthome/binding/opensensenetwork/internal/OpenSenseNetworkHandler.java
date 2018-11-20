@@ -12,6 +12,8 @@
  */
 package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
+import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.*;
+
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Temperature;
 
@@ -23,13 +25,15 @@ import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
+import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -46,6 +50,8 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     private final Logger logger = LoggerFactory.getLogger(OpenSenseNetworkHandler.class);
+    private final double lt = 49.1259;
+    private final double lg = 9.1428;
 
     @Nullable
     private OpenSenseNetworkConfiguration config;
@@ -67,40 +73,21 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
         String thingTypeID = channelUID.getThingUID().getThingTypeUID().getId();
         /* ex. "weather" or "environment" */
 
-        if (command instanceof RefreshType) { /*
-                                               * What kind of type is the command? RefreshType means, the value is
-                                               * being accessed via GET for example to be displayed in the PaperUI
-                                               */
+        if (command instanceof RefreshType) {
 
-            System.out.println("calling sample data");
+            if (thingTypeID.equals("weather")) {
 
-            boolean dataDownloaded = getSampleData(channelUID, command);
-
-            findSensor(49.1259, 9.1428, 50000);
-
-            if (dataDownloaded) {
-
-                /* For now, let's just assume the data is already available */
-
-                if (thingTypeID.equals("weather")) {
-
-                    switch (channel_group) {
-                        case "temperature":
-                            QuantityType<Temperature> temperature = new QuantityType<Temperature>(23.0,
-                                    SIUnits.CELSIUS);
-                            updateState(channelUID, temperature);
-                        case "humidity":
-                            QuantityType<Dimensionless> humidity = new QuantityType<Dimensionless>(65.6,
-                                    SmartHomeUnits.PERCENT);
-                            updateState(channelUID, humidity);
-                        default:
-                            logger.debug("Unknown Channel (Not sure if this could ever happen)", channel_group);
-                    }
-
-                } else if (thingTypeID.equals("environment")) {
-                    /* do nothing yet */
+                switch (channel_group) {
+                    case "temperature":
+                        updateTemperature(channelUID);
+                    case "humidity":
+                        updateHumidity(channelUID);
+                    default:
+                        logger.debug("Unknown Channel (Not sure if this could ever happen)", channel_group);
                 }
 
+            } else if (thingTypeID.equals("environment")) {
+                /* do nothing yet */
             }
 
         } else {
@@ -109,31 +96,52 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     }
 
-    private void findSensor(double lt, double lg, int md) {
+    public void updateTemperature(ChannelUID channelUID) {
 
+        double lt = this.lt;
+        double lg = this.lg;
+
+        // Thread temp_T = new Thread() {
+        // @Override
+        // public void run() {
         String refPoint = String.format("(%f,%f)", lt, lg);
-        String maxDistance = String.format("%d", md);
 
-        System.out.println(refPoint);
-        System.out.println(maxDistance);
+        Unirest.get(OS_VALUE_URL).queryString("measurandId", TEMP_ID).queryString("refPoint", refPoint)
+                .queryString("maxDistance", "5000").queryString("maxSensors", "5")
+                .queryString("minTimestamp", "2018-11-17T20:00:00.0Z").asJsonAsync(new Callback<JsonNode>() {
 
-        Unirest.get("https://www.opensense.network/progprak/beta/api/v1.0/sensors").queryString("measurandId", "7")
-                .queryString("refPoint", refPoint).queryString("maxDistance", maxDistance)
-                .queryString("maxSensors", "1").asJsonAsync(new Callback<JsonNode>() {
+                    @Override
+                    public void completed(@Nullable HttpResponse<JsonNode> response) {
+
+                        JsonNode body = response.getBody();
+                        JSONArray arr = body.getArray();
+                        JSONObject json = arr.getJSONObject(0);
+                        JSONArray valarr = json.getJSONArray("values");
+                        JSONObject val = valarr.getJSONObject(valarr.length() - 1);
+
+                        OSTemperature temp = new OSTemperature(val.getString("timestamp"),
+                                val.getDouble("numberValue"));
+
+                        System.out.println("Temp:" + temp.temp());
+                        System.out.println("Timestamp:" + temp.timestamp());
+                        System.out.println(channelUID);
+
+                        QuantityType<Temperature> current_temp = new QuantityType<Temperature>(temp.temp(),
+                                SIUnits.CELSIUS);
+
+                        try {
+                            updateState(channelUID, current_temp);
+                        } catch (Exception e) {
+                            logger.debug("Exception occurred during execution: {}", e.getMessage(), e);
+                            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
+                                    e.getMessage());
+                        }
+
+                    }
 
                     @Override
                     public void failed(@Nullable UnirestException e) {
                         System.out.println("The request has failed");
-                    }
-
-                    @Override
-                    public void completed(@Nullable HttpResponse<JsonNode> response) {
-                        JsonNode body = response.getBody();
-                        System.out.println(body.toString());
-
-                        Gson gson = new Gson();
-                        OSSensor sensor = gson.fromJson(body.toString(), OSSensor.class);
-
                     }
 
                     @Override
@@ -142,17 +150,72 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                     }
 
                 });
-
-        // OSSensor sensor = new OSSensor(id, userId, measurandId, location, altitudeAboveGround, directionVertical,
-        // directionHorizontal, sensorModel, accuracy, attributionText, attributionURL, licenseId);
+        // }
+        // };
+        //
+        //// temp_T.start();
 
     }
 
-    private boolean getSampleData(ChannelUID channelUID, Command command) { // Get sample data from OpenSense
+    public void updateHumidity(ChannelUID channelUID) {
 
-        System.out.println("yoo");
+        double lt = this.lt;
+        double lg = this.lg;
 
-        return true;
+        // Thread humi_T = new Thread() {
+        // @Override
+        // public void run() {
+        String refPoint = String.format("(%f,%f)", lt, lg);
+
+        Unirest.get(OS_VALUE_URL).queryString("measurandId", HUMI_ID).queryString("refPoint", refPoint)
+                .queryString("maxDistance", "5000").queryString("maxSensors", "5")
+                .queryString("minTimestamp", "2018-11-10T20:00:00.0Z").asJsonAsync(new Callback<JsonNode>() {
+
+                    @Override
+                    public void completed(@Nullable HttpResponse<JsonNode> response) {
+
+                        JsonNode body = response.getBody();
+                        JSONArray arr = body.getArray();
+                        JSONObject json = arr.getJSONObject(0);
+                        JSONArray valarr = json.getJSONArray("values");
+                        JSONObject val = valarr.getJSONObject(valarr.length() - 1);
+
+                        OSTemperature temp = new OSTemperature(val.getString("timestamp"),
+                                val.getDouble("numberValue"));
+
+                        System.out.println("Humi:" + temp.temp());
+                        System.out.println("Timestamp:" + temp.timestamp());
+                        System.out.println(channelUID);
+
+                        QuantityType<Dimensionless> current_humidity = new QuantityType<Dimensionless>(temp.temp(),
+                                SmartHomeUnits.PERCENT);
+
+                        try {
+                            updateState(channelUID, current_humidity);
+                        } catch (Exception e) {
+                            logger.debug("Exception occurred during execution: {}", e.getMessage(), e);
+                            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
+                                    e.getMessage());
+                        }
+
+                    }
+
+                    @Override
+                    public void failed(@Nullable UnirestException e) {
+                        System.out.println("The request has failed");
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        System.out.println("The request has been cancelled");
+                    }
+
+                });
+        // }
+        // };
+        //
+        // humi_T.start();
+
     }
 
     @Override
@@ -171,22 +234,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
         // set the thing status to UNKNOWN temporarily and let the background task decide for the real status.
         // the framework is then able to reuse the resources from the thing handler initialization.
         // we set this upfront to reliably check status updates in unit tests.
-        updateStatus(ThingStatus.UNKNOWN);
-
-        // Example for background initialization:
-        scheduler.execute(() -> {
-            boolean thingReachable = true; // <background task with long running initialization here>
-            // when done do:
-            if (thingReachable) {
-                updateStatus(ThingStatus.ONLINE);
-            } else {
-                updateStatus(ThingStatus.OFFLINE);
-            }
-        });
-
         updateStatus(ThingStatus.ONLINE);
-
-        logger.debug("Finished initializing!");
 
         // Note: When initialization can NOT be done set the status with more details for further
         // analysis. See also class ThingStatusDetail for all available status details.
