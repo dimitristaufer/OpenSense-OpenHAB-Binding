@@ -21,15 +21,15 @@
    
 
 		<config-description>
-			<parameter name="location" type="text" required="true">
-				<label>Location</label>
-				<description>This is your location based on your IP-address.</description>
-			</parameter>
-			<parameter name="Test Bool" type="boolean" required="false">
-                <label>Test Bool</label>
-                <description>This description should not confuse you.</description>
+            <parameter name="latitude" type="decimal" required="true">
+                <label>Latitude</label>
+                <description>Enter your latitude here</description>
             </parameter>
-		</config-description>
+            <parameter name="longitude" type="decimal" required="true">
+                <label>Longitude</label>
+                <description>Enter your longitude here</description>
+            </parameter>
+        </config-description>
 
 	</thing-type>
 	
