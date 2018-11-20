@@ -21,13 +21,17 @@
    
 
 		<config-description>
-            <parameter name="latitude" type="decimal" required="true">
+            <parameter name="latitude" type="decimal" required="false">
                 <label>Latitude</label>
                 <description>Enter your latitude here</description>
             </parameter>
-            <parameter name="longitude" type="decimal" required="true">
+            <parameter name="longitude" type="decimal" required="false">
                 <label>Longitude</label>
                 <description>Enter your longitude here</description>
+            </parameter>
+            <parameter name="sensorID" type="integer" required="false">
+                <label>SensorID</label>
+                <description>Enter the SensorID here</description>
             </parameter>
         </config-description>
 
