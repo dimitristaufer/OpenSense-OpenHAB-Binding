@@ -14,11 +14,14 @@ package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
 import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.*;
 
+import java.math.BigDecimal;
+
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Temperature;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.library.types.QuantityType;
 import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
@@ -50,8 +53,9 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     private final Logger logger = LoggerFactory.getLogger(OpenSenseNetworkHandler.class);
-    private final double lt = 49.1259;
-    private final double lg = 9.1428;
+    private BigDecimal lt = new BigDecimal(200);// = 49.1259;
+    private BigDecimal lg = new BigDecimal(200);// = 9.1428;
+    private BigDecimal sensorID = new BigDecimal(-1);
 
     @Nullable
     private OpenSenseNetworkConfiguration config;
@@ -98,13 +102,15 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     public void updateTemperature(ChannelUID channelUID) {
 
-        double lt = this.lt;
-        double lg = this.lg;
+        BigDecimal lt = this.lt;
+        BigDecimal lg = this.lg;
 
         // Thread temp_T = new Thread() {
         // @Override
         // public void run() {
         String refPoint = String.format("(%f,%f)", lt, lg);
+
+        System.out.println("Getting Temperature for refPoint:" + refPoint);
 
         Unirest.get(OS_VALUE_URL).queryString("measurandId", TEMP_ID).queryString("refPoint", refPoint)
                 .queryString("maxDistance", "5000").queryString("maxSensors", "5")
@@ -159,13 +165,15 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     public void updateHumidity(ChannelUID channelUID) {
 
-        double lt = this.lt;
-        double lg = this.lg;
+        BigDecimal lt = this.lt;
+        BigDecimal lg = this.lg;
 
         // Thread humi_T = new Thread() {
         // @Override
         // public void run() {
         String refPoint = String.format("(%f,%f)", lt, lg);
+
+        System.out.println("Getting Humidity for refPoint:" + refPoint);
 
         Unirest.get(OS_VALUE_URL).queryString("measurandId", HUMI_ID).queryString("refPoint", refPoint)
                 .queryString("maxDistance", "5000").queryString("maxSensors", "5")
@@ -221,7 +229,17 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
     @Override
     public void initialize() {
         logger.debug("Start initializing OpenSense - Line 1");
-        config = getConfigAs(OpenSenseNetworkConfiguration.class);
+        // config = getConfigAs(OpenSenseNetworkConfiguration.class);
+        Configuration config = getThing().getConfiguration();
+
+        lt = (BigDecimal) config.get("latitude");
+        lg = (BigDecimal) config.get("longitude");
+        sensorID = (BigDecimal) config.get("sensorID");
+        System.out.println("=====================================================");
+        System.out.println(lt);
+        System.out.println(lg);
+        System.out.println(sensorID);
+        System.out.println("=====================================================");
 
         // TODO: Initialize the handler.
         // The framework requires you to return from this method quickly. Also, before leaving this method a thing
