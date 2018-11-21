@@ -110,6 +110,8 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
         // public void run() {
         String refPoint = String.format("(%f,%f)", lt, lg);
 
+        System.out.println("Getting Temperature for refPoint:" + refPoint);
+
         Unirest.get(OS_VALUE_URL).queryString("measurandId", TEMP_ID).queryString("refPoint", refPoint)
                 .queryString("maxDistance", "5000").queryString("maxSensors", "5")
                 .queryString("minTimestamp", "2018-11-17T20:00:00.0Z").asJsonAsync(new Callback<JsonNode>() {
@@ -170,6 +172,8 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
         // @Override
         // public void run() {
         String refPoint = String.format("(%f,%f)", lt, lg);
+
+        System.out.println("Getting Humidity for refPoint:" + refPoint);
 
         Unirest.get(OS_VALUE_URL).queryString("measurandId", HUMI_ID).queryString("refPoint", refPoint)
                 .queryString("maxDistance", "5000").queryString("maxSensors", "5")
