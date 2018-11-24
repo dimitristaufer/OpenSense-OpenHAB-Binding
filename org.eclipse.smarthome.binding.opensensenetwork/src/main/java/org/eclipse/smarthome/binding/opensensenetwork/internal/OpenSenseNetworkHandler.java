@@ -228,18 +228,12 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     @Override
     public void initialize() {
-        logger.debug("Start initializing OpenSense - Line 1");
+        OpenSenseNetworkConfiguration.UpdateThingConfigFile();
         // config = getConfigAs(OpenSenseNetworkConfiguration.class);
         Configuration config = getThing().getConfiguration();
-
         lt = (BigDecimal) config.get("latitude");
         lg = (BigDecimal) config.get("longitude");
         sensorID = (BigDecimal) config.get("sensorID");
-        System.out.println("=====================================================");
-        System.out.println(lt);
-        System.out.println(lg);
-        System.out.println(sensorID);
-        System.out.println("=====================================================");
 
         // TODO: Initialize the handler.
         // The framework requires you to return from this method quickly. Also, before leaving this method a thing

@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<thing:thing-descriptions bindingId="opensensenetwork"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
-	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><thing:thing-descriptions xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bindingId="opensensenetwork" xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
 	<thing-type id="weather">
 		<label>OpenSense Weather</label>
@@ -21,19 +17,19 @@
    
 
 		<config-description>
-            <parameter name="latitude" type="decimal" required="false">
+            <parameter name="latitude" required="false" type="decimal">
                 <label>Latitude</label>
                 <description>Enter your latitude here</description>
             </parameter>
-            <parameter name="longitude" type="decimal" required="false">
+            <parameter name="longitude" required="false" type="decimal">
                 <label>Longitude</label>
                 <description>Enter your longitude here</description>
             </parameter>
-            <parameter name="sensorID" type="integer" required="false">
+            <parameter name="sensorID" required="false" type="integer">
                 <label>SensorID</label>
                 <description>Enter the SensorID here</description>
             </parameter>
-        </config-description>
+       <parameter name="temperature" required="false" type="boolean"><label>temperature</label></parameter><parameter name="noise" required="false" type="boolean"><label>noise</label></parameter><parameter name="humidity" required="false" type="boolean"><label>humidity</label></parameter><parameter name="brightness" required="false" type="boolean"><label>brightness</label></parameter><parameter name="air_pressure" required="false" type="boolean"><label>air_pressure</label></parameter><parameter name="wind_speed" required="false" type="boolean"><label>wind_speed</label></parameter><parameter name="wind_direction" required="false" type="boolean"><label>wind_direction</label></parameter><parameter name="cloudiness" required="false" type="boolean"><label>cloudiness</label></parameter><parameter name="precipitation_amount" required="false" type="boolean"><label>precipitation_amount</label></parameter><parameter name="precipitation_type" required="false" type="boolean"><label>precipitation_type</label></parameter><parameter name="pm10" required="false" type="boolean"><label>pm10</label></parameter><parameter name="pm2_5" required="false" type="boolean"><label>pm2_5</label></parameter></config-description>
 
 	</thing-type>
 	
@@ -48,10 +44,10 @@
         <label>Current Weather</label>
         <description>This is the current weather</description>
         <channels>
-            <channel id="location" typeId="location" /> <!-- typeId is specified bellow -->
-            <channel id="stationId" typeId="stationId" /> <!-- typeId is specified bellow -->
-            <channel id="observationTime" typeId="observationTime" /> <!-- typeId is specified bellow -->
-            <channel id="value" typeId="system.outdoor-temperature" /> <!-- typeId is system wide -->
+            <channel id="location" typeId="location"/> <!-- typeId is specified bellow -->
+            <channel id="stationId" typeId="stationId"/> <!-- typeId is specified bellow -->
+            <channel id="observationTime" typeId="observationTime"/> <!-- typeId is specified bellow -->
+            <channel id="value" typeId="system.outdoor-temperature"/> <!-- typeId is system wide -->
         </channels>
     </channel-group-type>
     
@@ -59,33 +55,33 @@
         <label>Current Weather</label>
         <description>This is the current weather</description>
         <channels>
-            <channel id="location" typeId="location" /> <!-- typeId is specified bellow -->
-            <channel id="stationId" typeId="stationId" /> <!-- typeId is specified bellow -->
-            <channel id="observationTime" typeId="observationTime" /> <!-- typeId is specified bellow -->
-            <channel id="value" typeId="system.atmospheric-humidity" /> <!-- typeId is system wide -->
+            <channel id="location" typeId="location"/> <!-- typeId is specified bellow -->
+            <channel id="stationId" typeId="stationId"/> <!-- typeId is specified bellow -->
+            <channel id="observationTime" typeId="observationTime"/> <!-- typeId is specified bellow -->
+            <channel id="value" typeId="system.atmospheric-humidity"/> <!-- typeId is system wide -->
         </channels>
     </channel-group-type>
     
 
-    <channel-type id="location" advanced="true">
+    <channel-type advanced="true" id="location">
         <item-type>String</item-type>
         <label>Observation Location</label>
         <description>Weather observation location</description>
-        <state readOnly="true" pattern="%s"></state>
+        <state pattern="%s" readOnly="true"/>
     </channel-type>
 
-    <channel-type id="stationId" advanced="true">
+    <channel-type advanced="true" id="stationId">
         <item-type>String</item-type>
         <label>Station Id</label>
         <description>Weather station identifier</description>
-        <state readOnly="true" pattern="%s"></state>
+        <state pattern="%s" readOnly="true"/>
     </channel-type>
 
-    <channel-type id="observationTime" advanced="true">
+    <channel-type advanced="true" id="observationTime">
         <item-type>DateTime</item-type>
         <label>Observation Time</label>
         <description>Observation date and time</description>
-        <state readOnly="true"></state>
+        <state readOnly="true"/>
     </channel-type>
 
 </thing:thing-descriptions>
