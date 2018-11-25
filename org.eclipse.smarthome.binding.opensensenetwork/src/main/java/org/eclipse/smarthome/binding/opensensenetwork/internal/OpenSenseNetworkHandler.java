@@ -15,6 +15,9 @@ package org.eclipse.smarthome.binding.opensensenetwork.internal;
 import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Temperature;
@@ -47,6 +50,17 @@ import com.mashape.unirest.http.exceptions.UnirestException;
  * The {@link OpenSenseNetworkHandler} is responsible for handling commands, which are
  * sent to one of the channels.
  *
+ * CONSOLE SETTINGS:
+ * 1) Find the following file: smarthome-master/git/smarthome/distribution/smarthome/logback_debug.xml
+ * 2) Modify the "level=" to your liking
+ *
+ * DEBUG -> All logs
+ * INFO -> Info logs only
+ * ERROR -> Error logs only
+ * OFF -> No logs
+ *
+ *
+ *
  * @author ISE - Initial contribution
  */
 @NonNullByDefault
@@ -56,6 +70,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
     private BigDecimal lt = new BigDecimal(200);// = 49.1259;
     private BigDecimal lg = new BigDecimal(200);// = 9.1428;
     private BigDecimal sensorID = new BigDecimal(-1);
+    private final ArrayList<String> measurands_channels = new ArrayList<>();
 
     @Nullable
     private OpenSenseNetworkConfiguration config;
@@ -64,15 +79,14 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
         super(thing);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "deprecation", "null" })
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
 
-        String bindingID = channelUID.getThingUID().getThingTypeUID().getBindingId();
-        /* equals "opensensenetwork" */
+        // String bindingID = channelUID.getThingUID().getThingTypeUID().getBindingId();
         String channel_group = channelUID.getGroupId();
         /* ex. "temperature" */
-        String thingUID = channelUID.getThingUID().getId();
+        // String thingUID = channelUID.getThingUID().getId();
         /* ex. "2dd327f6" */
         String thingTypeID = channelUID.getThingUID().getThingTypeUID().getId();
         /* ex. "weather" or "environment" */
@@ -83,31 +97,33 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
                 switch (channel_group) {
                     case "temperature":
-                        updateTemperature(channelUID);
+                        System.out.println("First Group: " + channel_group);
+                        getCurrentValue(channelUID);
                     case "humidity":
                         updateHumidity(channelUID);
+                        System.out.println("Second Group: " + channel_group);
                     default:
-                        logger.debug("Unknown Channel (Not sure if this could ever happen)", channel_group);
+                        System.out.println("Other Group: " + channel_group);
                 }
 
             } else if (thingTypeID.equals("environment")) {
                 /* do nothing yet */
             }
 
-        } else {
-            logger.debug("Command {} is not supported for channel: {}", command, channelUID.getId());
         }
 
     }
 
-    public void updateTemperature(ChannelUID channelUID) {
+    /**
+     * This method will later be modified to automatically handle any measurand and find the right unit
+     *
+     * @param channelUID
+     */
+    public void getCurrentValue(ChannelUID channelUID) {
 
         BigDecimal lt = this.lt;
         BigDecimal lg = this.lg;
 
-        // Thread temp_T = new Thread() {
-        // @Override
-        // public void run() {
         String refPoint = String.format("(%f,%f)", lt, lg);
 
         System.out.println("Getting Temperature for refPoint:" + refPoint);
@@ -130,7 +146,6 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
                         System.out.println("Temp:" + temp.temp());
                         System.out.println("Timestamp:" + temp.timestamp());
-                        System.out.println(channelUID);
 
                         QuantityType<Temperature> current_temp = new QuantityType<Temperature>(temp.temp(),
                                 SIUnits.CELSIUS);
@@ -156,21 +171,19 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                     }
 
                 });
-        // }
-        // };
-        //
-        //// temp_T.start();
 
     }
 
+    /**
+     * Can be deleted once "getCurrentValue()" is complete
+     * 
+     * @param channelUID
+     */
     public void updateHumidity(ChannelUID channelUID) {
 
         BigDecimal lt = this.lt;
         BigDecimal lg = this.lg;
 
-        // Thread humi_T = new Thread() {
-        // @Override
-        // public void run() {
         String refPoint = String.format("(%f,%f)", lt, lg);
 
         System.out.println("Getting Humidity for refPoint:" + refPoint);
@@ -193,7 +206,6 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
                         System.out.println("Humi:" + temp.temp());
                         System.out.println("Timestamp:" + temp.timestamp());
-                        System.out.println(channelUID);
 
                         QuantityType<Dimensionless> current_humidity = new QuantityType<Dimensionless>(temp.temp(),
                                 SmartHomeUnits.PERCENT);
@@ -219,23 +231,63 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                     }
 
                 });
-        // }
-        // };
-        //
-        // humi_T.start();
 
     }
 
     @Override
     public void initialize() {
-        OpenSenseNetworkConfiguration.UpdateThingConfigFile();
-        // config = getConfigAs(OpenSenseNetworkConfiguration.class);
-        Configuration config = getThing().getConfiguration();
-        lt = (BigDecimal) config.get("latitude");
-        lg = (BigDecimal) config.get("longitude");
-        sensorID = (BigDecimal) config.get("sensorID");
 
-        updateStatus(ThingStatus.ONLINE);
+        updateStatus(ThingStatus.UNKNOWN); // Set Thing Status to unknown
+
+        System.out.println("Thing Type: " + thing.getThingTypeUID());
+
+        if (thing.getThingTypeUID().equals(THING_TYPE_CONFIGURATION)) {
+            OpenSenseNetworkConfiguration config = new OpenSenseNetworkConfiguration();
+            boolean success = false;
+            try {
+                success = config.performConfiguration();
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
+            if (success) {
+                updateStatus(ThingStatus.ONLINE);
+            }
+
+            // TODO: Load the manipulated "thing-types.xml" file -> Currently only after hard restart
+            // I tried "updateConfiguration(configuration);", but this only updates the configuration of the
+            // Configuration Thing
+
+        } else if (thing.getThingTypeUID().equals(THING_TYPE_WEATHER)) {
+            // TODO: Download Weather Data and Store locally
+            Configuration config = getThing().getConfiguration();
+            lt = (BigDecimal) config.get("latitude");
+            lg = (BigDecimal) config.get("longitude");
+            sensorID = (BigDecimal) config.get("sensorID");
+
+            Map<String, Object> map = config.getProperties();
+
+            for (Entry<String, Object> parameter : map.entrySet()) {
+
+                if (parameter.getValue().equals(true)) {
+                    measurands_channels.add(parameter.getKey());
+                }
+
+            }
+            updateStatus(ThingStatus.ONLINE);
+        } else if (thing.getThingTypeUID().equals(THING_TYPE_ENVIRONMENT)) {
+            // TODO: Download Environmental Data and Store locally
+            updateStatus(ThingStatus.ONLINE);
+        }
 
     }
+
+    /* For future reference -> How to run something on another thread */
+
+    // Thread humi_T = new Thread() {
+    // @Override
+    // public void run() {
+    // }
+    // };
+    //
+    // humi_T.start();
 }

@@ -56,6 +56,10 @@ public class OpenSenseNetworkHandlerFactory extends BaseThingHandlerFactory {
             return new OpenSenseNetworkHandler(thing);
         }
 
+        if (OpenSenseNetworkBindingConstants.THING_TYPE_CONFIGURATION.equals(thingTypeUID)) {
+            return new OpenSenseNetworkHandler(thing);
+        }
+
         return null;
     }
 }

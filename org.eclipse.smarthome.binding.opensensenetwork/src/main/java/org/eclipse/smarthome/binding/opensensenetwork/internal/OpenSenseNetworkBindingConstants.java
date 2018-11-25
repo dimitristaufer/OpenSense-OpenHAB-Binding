@@ -33,16 +33,18 @@ public class OpenSenseNetworkBindingConstants {
     // List of all Thing Type UIDs
     public static final ThingTypeUID THING_TYPE_WEATHER = new ThingTypeUID(BINDING_ID, "weather");
     public static final ThingTypeUID THING_TYPE_ENVIRONMENT = new ThingTypeUID(BINDING_ID, "environment");
+    public static final ThingTypeUID THING_TYPE_CONFIGURATION = new ThingTypeUID(BINDING_ID, "configuration");
 
     // List of all Channel ids
-    public static final String CHANNEL_TEMPERATURE = "temperature";
-    public static final String CHANNEL_HUMIDITY = "humidity";
+    // public static final String CHANNEL_TEMPERATURE = "temperature";
+    // public static final String CHANNEL_HUMIDITY = "humidity";
 
     // public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(THING_TYPE_WEATHER);
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = new HashSet<>(
-            Arrays.asList(THING_TYPE_WEATHER, THING_TYPE_ENVIRONMENT));
+            Arrays.asList(THING_TYPE_WEATHER, THING_TYPE_ENVIRONMENT, THING_TYPE_CONFIGURATION));
 
-    public static final String OS_VALUE_URL = "https://www.opensense.network/progprak/beta/api/v1.0/values";
+    public static final String OS_VALUE_URL = "https://www.opensense.network/beta/api/v1.0/values"; // progprak
+    public static final String OS_MEASURANDS_URL = "https://www.opensense.network/beta/api/v1.0/measurands"; // progprak
     public static final String TEMP_ID = "1";
     public static final String HUMI_ID = "3";
 
