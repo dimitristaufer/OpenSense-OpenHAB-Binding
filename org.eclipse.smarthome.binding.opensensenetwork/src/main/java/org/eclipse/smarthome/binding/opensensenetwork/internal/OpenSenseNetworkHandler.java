@@ -176,7 +176,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     /**
      * Can be deleted once "getCurrentValue()" is complete
-     * 
+     *
      * @param channelUID
      */
     public void updateHumidity(ChannelUID channelUID) {
@@ -251,6 +251,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
             }
             if (success) {
                 updateStatus(ThingStatus.ONLINE);
+
             }
 
             // TODO: Load the manipulated "thing-types.xml" file -> Currently only after hard restart

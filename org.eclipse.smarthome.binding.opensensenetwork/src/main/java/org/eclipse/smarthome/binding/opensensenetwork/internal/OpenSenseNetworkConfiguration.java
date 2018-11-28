@@ -109,9 +109,10 @@ public class OpenSenseNetworkConfiguration {
 
                 System.out.println("Done - Config");
                 // System.out.println(filepath);
-                boolean success = false;
-                success = didWriteJSONtoFile(body, file.getAbsolutePath().concat("/ESH-INF/binding/measurants.json"));
-                success = didCreateChannels(measurands);
+                boolean success = true;
+                // success = didWriteJSONtoFile(body,
+                // file.getAbsolutePath().concat("/ESH-INF/binding/measurants.json"));
+                // success = didCreateChannels(measurands);
 
                 if (success) {
                     return true;

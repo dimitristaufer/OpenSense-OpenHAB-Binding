@@ -13,10 +13,11 @@
                 <label>Sample Humidity Label</label>
                 <description>Sample Humidity Description</description>
             </channel-group>
-         <channel-group id="noise" typeId="noise"><label>Sample Measurand Label</label><description>Sample Measurand Description</description></channel-group><channel-group id="brightness" typeId="brightness"><label>Sample Measurand Label</label><description>Sample Measurand Description</description></channel-group><channel-group id="air_pressure" typeId="air_pressure"><label>Sample Measurand Label</label><description>Sample Measurand Description</description></channel-group><channel-group id="wind_speed" typeId="wind_speed"><label>Sample Measurand Label</label><description>Sample Measurand Description</description></channel-group><channel-group id="wind_direction" typeId="wind_direction"><label>Sample Measurand Label</label><description>Sample Measurand Description</description></channel-group><channel-group id="cloudiness" typeId="cloudiness"><label>Sample Measurand Label</label><description>Sample Measurand Description</description></channel-group><channel-group id="precipitation_amount" typeId="precipitation_amount"><label>Sample Measurand Label</label><description>Sample Measurand Description</description></channel-group><channel-group id="precipitation_type" typeId="precipitation_type"><label>Sample Measurand Label</label><description>Sample Measurand Description</description></channel-group><channel-group id="pm10" typeId="pm10"><label>Sample Measurand Label</label><description>Sample Measurand Description</description></channel-group><channel-group id="pm2_5" typeId="pm2_5"><label>Sample Measurand Label</label><description>Sample Measurand Description</description></channel-group></channel-groups>
+         </channel-groups>
    
 
 		<config-description>
+		
             <parameter name="latitude" required="false" type="decimal">
                 <label>Latitude</label>
                 <description>Enter your latitude here</description>
@@ -29,7 +30,9 @@
                 <label>SensorID</label>
                 <description>Enter the SensorID here</description>
             </parameter>
+     
         <parameter name="temperature" required="false" type="boolean"><label>temperature</label></parameter><parameter name="noise" required="false" type="boolean"><label>noise</label></parameter><parameter name="humidity" required="false" type="boolean"><label>humidity</label></parameter><parameter name="brightness" required="false" type="boolean"><label>brightness</label></parameter><parameter name="air_pressure" required="false" type="boolean"><label>air_pressure</label></parameter><parameter name="wind_speed" required="false" type="boolean"><label>wind_speed</label></parameter><parameter name="wind_direction" required="false" type="boolean"><label>wind_direction</label></parameter><parameter name="cloudiness" required="false" type="boolean"><label>cloudiness</label></parameter><parameter name="precipitation_amount" required="false" type="boolean"><label>precipitation_amount</label></parameter><parameter name="precipitation_type" required="false" type="boolean"><label>precipitation_type</label></parameter><parameter name="pm10" required="false" type="boolean"><label>pm10</label></parameter><parameter name="pm2_5" required="false" type="boolean"><label>pm2_5</label></parameter></config-description>
+
 
 	</thing-type>
 	
