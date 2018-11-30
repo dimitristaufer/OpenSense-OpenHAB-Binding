@@ -55,7 +55,7 @@ public class OpenSenseNetworkConfiguration {
      * @return
      * @throws UnirestException
      */
-    public synchronized boolean performConfiguration() throws UnirestException {
+    public synchronized static boolean performConfiguration() throws UnirestException {
 
         HttpResponse<JsonNode> response = Unirest.get(OS_MEASURANDS_URL).asJson();
         {

@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><thing:thing-descriptions xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bindingId="opensensenetwork" xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
-	<thing-type id="weather">
-		<label>OpenSense Weather</label>
-		<description>Weather readings from OpenSense Network</description>
+	<thing-type id="receive">
+		<label>Receive Data from OpenSense</label>
+		<description>Receive weather and environmental data from OpenSense</description>
 
 		 <channel-groups>
             <channel-group id="temperature" typeId="temperature">
-                <label>Sample Temperature Label</label>
-                <description>Sample Temperature Description</description>
+                <label>Current Temperature</label>
+                <description>This is the current temperature</description>
+            </channel-group>
+            <channel-group id="noise" typeId="noise">
+                <label>Current Noise Level</label>
+                <description>This is the current noise level</description>
             </channel-group>
             <channel-group id="humidity" typeId="humidity">
-                <label>Sample Humidity Label</label>
-                <description>Sample Humidity Description</description>
+                <label>Current Humidity</label>
+                <description>This is the current humidity</description>
             </channel-group>
          </channel-groups>
    
@@ -36,62 +40,181 @@
 
 	</thing-type>
 	
-	<thing-type id="environment">
-        <label>OpenSense Environment</label>
-        <description>Environment readings from OpenSense Network</description>
-
-    </thing-type>
     
-    <thing-type id="configuration">
-        <label>OpenSense Configuration</label>
-        <description>This configuration Thing is required in order for other OpenSense Things to work.</description>
-
+    <thing-type id="contribute">
+        <label>Contribute Data to OpenSense</label>
+        <description>Contribute weather and environmental data to OpenSense</description>
     </thing-type>
 
 
     <channel-group-type id="temperature">
-        <label>Current Weather</label>
-        <description>This is the current weather</description>
+        <label>Current Temperature</label>
+        <description>This is the current temperature</description>
         <channels>
-            <channel id="location" typeId="location"/> <!-- typeId is specified bellow -->
-            <channel id="stationId" typeId="stationId"/> <!-- typeId is specified bellow -->
-            <channel id="observationTime" typeId="observationTime"/> <!-- typeId is specified bellow -->
-            <channel id="value" typeId="system.outdoor-temperature"/> <!-- typeId is system wide -->
-        </channels>
-    </channel-group-type>
-        
-    <channel-group-type id="humidity">
-        <label>Current Weather</label>
-        <description>This is the current weather</description>
-        <channels>
-            <channel id="location" typeId="location"/> <!-- typeId is specified bellow -->
-            <channel id="stationId" typeId="stationId"/> <!-- typeId is specified bellow -->
-            <channel id="observationTime" typeId="observationTime"/> <!-- typeId is specified bellow -->
-            <channel id="value" typeId="system.atmospheric-humidity"/> <!-- typeId is system wide -->
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="value" typeId="system.outdoor-temperature"/>
         </channels>
     </channel-group-type>
     
-    <!--  Currently unused  -->
-
-    <channel-type advanced="true" id="location">
-        <item-type>String</item-type>
-        <label>Observation Location</label>
-        <description>Weather observation location</description>
-        <state pattern="%s" readOnly="true"/>
+    <channel-group-type id="noise">
+        <label>Current Noise</label>
+        <description>This is the current noise</description>
+        <channels>
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
+            <channel id="value" typeId="noise_level"/>
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="humidity">
+        <label>Current Humidity</label>
+        <description>This is the current humidity</description>
+        <channels>
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
+            <channel id="value" typeId="system.atmospheric-humidity"/>
+        </channels>
+    </channel-group-type>
+        
+     
+    <channel-type advanced="false" id="noise_level">
+        <item-type>Number</item-type>
+        <label>Noise Level</label>
+        <state pattern="%f dB" readOnly="false"/>
     </channel-type>
 
-    <channel-type advanced="true" id="stationId">
+    <channel-type advanced="true" id="id">
+        <item-type>Number</item-type>
+        <label>id</label>
+        <description>No Description</description>
+        <state pattern="%d" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="userId">
+        <item-type>Number</item-type>
+        <label>userId</label>
+        <description>No Description</description>
+        <state pattern="%d" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="measurandId">
+        <item-type>Number</item-type>
+        <label>measurandId</label>
+        <description>No Description</description>
+        <state pattern="%d" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="unitId">
+        <item-type>Number</item-type>
+        <label>unitId</label>
+        <description>No Description</description>
+        <state pattern="%d" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="location">
         <item-type>String</item-type>
-        <label>Station Id</label>
-        <description>Weather station identifier</description>
-        <state pattern="%s" readOnly="true"/>
+        <label>location</label>
+        <description>No Description</description>
+        <state pattern="lat: %s, long: %s" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="altitudeAboveGround">
+        <item-type>Number</item-type>
+        <label>altitudeAboveGround</label>
+        <description>No Description</description>
+        <state pattern="%d" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="directionVertical">
+        <item-type>Number</item-type>
+        <label>directionVertical</label>
+        <description>No Description</description>
+        <state pattern="%d" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="directionHorizontal">
+        <item-type>Number</item-type>
+        <label>directionHorizontal</label>
+        <description>No Description</description>
+        <state pattern="%d" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="sensorModel">
+        <item-type>String</item-type>
+        <label>sensorModel</label>
+        <description>No Description</description>
+        <state pattern="%s" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="accuracy">
+        <item-type>Number</item-type>
+        <label>accuracy</label>
+        <description>No Description</description>
+        <state pattern="%d" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="attributionText">
+        <item-type>String</item-type>
+        <label>attributionText</label>
+        <description>No Description</description>
+        <state pattern="%s" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="attributionURL">
+        <item-type>String</item-type>
+        <label>attributionURL</label>
+        <description>No Description</description>
+        <state pattern="%s" readOnly="false"/>
+    </channel-type>
+    
+    <channel-type advanced="true" id="licenseId">
+        <item-type>Number</item-type>
+        <label>licenseId</label>
+        <description>No Description</description>
+        <state pattern="%d" readOnly="false"/>
     </channel-type>
 
     <channel-type advanced="true" id="observationTime">
-        <item-type>DateTime</item-type>
-        <label>Observation Time</label>
-        <description>Observation date and time</description>
-        <state readOnly="true"/>
+        <item-type>String</item-type>
+        <label>observationTime</label>
+        <description>No Description</description>
+        <state pattern="%s" readOnly="false"/>
     </channel-type>
 
 </thing:thing-descriptions>

@@ -48,15 +48,11 @@ public class OpenSenseNetworkHandlerFactory extends BaseThingHandlerFactory {
     protected @Nullable ThingHandler createHandler(Thing thing) {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
-        if (OpenSenseNetworkBindingConstants.THING_TYPE_WEATHER.equals(thingTypeUID)) {
+        if (OpenSenseNetworkBindingConstants.THING_TYPE_RECEIVE.equals(thingTypeUID)) {
             return new OpenSenseNetworkHandler(thing);
         }
 
-        if (OpenSenseNetworkBindingConstants.THING_TYPE_ENVIRONMENT.equals(thingTypeUID)) {
-            return new OpenSenseNetworkHandler(thing);
-        }
-
-        if (OpenSenseNetworkBindingConstants.THING_TYPE_CONFIGURATION.equals(thingTypeUID)) {
+        if (OpenSenseNetworkBindingConstants.THING_TYPE_CONTRIBUTE.equals(thingTypeUID)) {
             return new OpenSenseNetworkHandler(thing);
         }
 

@@ -14,15 +14,10 @@ package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
 import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.*;
 
-import java.util.ArrayList;
-
-import javax.measure.quantity.Temperature;
-
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.library.types.QuantityType;
-import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
@@ -30,8 +25,6 @@ import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
@@ -58,8 +51,8 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 @NonNullByDefault
 public class OpenSenseNetworkHandler extends BaseThingHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(OpenSenseNetworkHandler.class);
-    private final ArrayList<String> desired_channels = new ArrayList<>();
+    // private final Logger logger = LoggerFactory.getLogger(OpenSenseNetworkHandler.class);
+    // private final ArrayList<String> desired_channels = new ArrayList<>();
 
     @Nullable
     private OpenSenseNetworkConfiguration config;
@@ -68,20 +61,19 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
         super(thing);
     }
 
-    @SuppressWarnings({ "deprecation", "null" })
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
 
         String measurand = channelUID.getGroupId(); // ex. "temperature"
-        String thingType = channelUID.getThingUID().getThingTypeUID().getId(); // ex. "weather"
+        String thingType = channelUID.getThingUID().getThingTypeUID().getId(); // ex. "receive"
 
         if (command instanceof RefreshType) {
-            if (thingType.equals("weather")) {
+            if (thingType.equals("receive")) {
                 OSSensor sensor = OSSensor.getSensorForMeasurand(measurand);
                 // System.out.println("Updating Channel: '" + measurand + "' using Sensor:");
                 // System.out.println(sensor.toString());
                 updateState(channelUID, getCurrentValue(sensor));
-            } else if (thingType.equals("environment")) {
+            } else if (thingType.equals("contribute")) {
                 /* do nothing yet */
             }
         }
@@ -92,6 +84,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
      *
      * @param OSSensor
      */
+    @SuppressWarnings("rawtypes")
     public QuantityType getCurrentValue(OSSensor sensor) {
 
         System.out.println("Getting current val for sensorid:" + sensor.id());
@@ -107,8 +100,8 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
         } catch (UnirestException error) {
             error.printStackTrace();
-            QuantityType<Temperature> current_temp = new QuantityType<Temperature>(0.0, SIUnits.CELSIUS);
-            return current_temp;
+            OSValue osValue = new OSValue("", 0.0);
+            return OSQuantityType.getQuantityType(sensor.measurandId(), osValue.numberValue());
 
         }
 
@@ -121,20 +114,14 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
         System.out.println("Thing Type: " + thing.getThingTypeUID());
 
-        if (thing.getThingTypeUID().equals(THING_TYPE_CONFIGURATION)) {
-            OpenSenseNetworkConfiguration config = new OpenSenseNetworkConfiguration();
-            boolean success = false;
+        if (thing.getThingTypeUID().equals(THING_TYPE_RECEIVE)) {
+
             try {
-                success = config.performConfiguration();
+                OpenSenseNetworkConfiguration.performConfiguration();
             } catch (UnirestException e) {
                 e.printStackTrace();
             }
-            if (success) {
-                updateStatus(ThingStatus.ONLINE);
 
-            }
-
-        } else if (thing.getThingTypeUID().equals(THING_TYPE_WEATHER)) {
             Configuration config = getThing().getConfiguration();
             if (config.get("latitude") != null && config.get("longitude") != null) {
                 String lt = config.get("latitude").toString();
@@ -157,9 +144,8 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
             // desired_channels.add(parameter.getKey());
             // }
             // }
+
             updateStatus(ThingStatus.ONLINE);
-        } else if (thing.getThingTypeUID().equals(THING_TYPE_ENVIRONMENT)) {
-            updateStatus(ThingStatus.OFFLINE);
         }
 
     }
