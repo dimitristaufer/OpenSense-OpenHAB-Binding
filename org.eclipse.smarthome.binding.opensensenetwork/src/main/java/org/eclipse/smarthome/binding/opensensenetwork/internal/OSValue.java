@@ -1,20 +1,20 @@
 package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
-public class OSTemperature {
+public class OSValue {
 
     private String timestamp;
     private double numberValue;
 
-    public OSTemperature() {
+    public OSValue() {
         // Empty Init
     }
 
-    public OSTemperature(String timestamp, double numberValue) {
+    public OSValue(String timestamp, double numberValue) {
         this.timestamp = timestamp;
         this.numberValue = numberValue;
     }
 
-    public double temp() {
+    public double numberValue() {
         return this.numberValue;
     }
 

@@ -20,15 +20,15 @@
 		
             <parameter name="latitude" required="false" type="decimal">
                 <label>Latitude</label>
-                <description>Enter your latitude here</description>
+                <description>Leave blank for auto location (TODO)</description>
             </parameter>
             <parameter name="longitude" required="false" type="decimal">
                 <label>Longitude</label>
-                <description>Enter your longitude here</description>
+                <description>Leave blank for auto location (TODO)</description>
             </parameter>
             <parameter name="sensorID" required="false" type="integer">
                 <label>SensorID</label>
-                <description>Enter the SensorID here</description>
+                <description>Leave blank for auto SensorId (TODO)</description>
             </parameter>
      
         <parameter name="temperature" required="false" type="boolean"><label>temperature</label></parameter><parameter name="noise" required="false" type="boolean"><label>noise</label></parameter><parameter name="humidity" required="false" type="boolean"><label>humidity</label></parameter><parameter name="brightness" required="false" type="boolean"><label>brightness</label></parameter><parameter name="air_pressure" required="false" type="boolean"><label>air_pressure</label></parameter><parameter name="wind_speed" required="false" type="boolean"><label>wind_speed</label></parameter><parameter name="wind_direction" required="false" type="boolean"><label>wind_direction</label></parameter><parameter name="cloudiness" required="false" type="boolean"><label>cloudiness</label></parameter><parameter name="precipitation_amount" required="false" type="boolean"><label>precipitation_amount</label></parameter><parameter name="precipitation_type" required="false" type="boolean"><label>precipitation_type</label></parameter><parameter name="pm10" required="false" type="boolean"><label>pm10</label></parameter><parameter name="pm2_5" required="false" type="boolean"><label>pm2_5</label></parameter></config-description>

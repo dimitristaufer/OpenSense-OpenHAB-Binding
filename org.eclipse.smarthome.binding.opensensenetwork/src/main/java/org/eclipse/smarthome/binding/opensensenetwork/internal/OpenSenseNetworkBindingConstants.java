@@ -43,9 +43,11 @@ public class OpenSenseNetworkBindingConstants {
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = new HashSet<>(
             Arrays.asList(THING_TYPE_WEATHER, THING_TYPE_ENVIRONMENT, THING_TYPE_CONFIGURATION));
 
-    public static final String OS_VALUE_URL = "https://www.opensense.network/beta/api/v1.0/values"; // progprak
-    public static final String OS_MEASURANDS_URL = "https://www.opensense.network/beta/api/v1.0/measurands"; // progprak
-    public static final String TEMP_ID = "1";
-    public static final String HUMI_ID = "3";
+    public static final String OS_BASE_URL = "https://www.opensense.network/progprak/beta/api/v1.0/";
+    public static final String OS_VALUE_URL = "values";
+    public static final String OS_MEASURANDS_URL = "https://www.opensense.network/progprak/beta/api/v1.0/measurands";
+    public static final String OS_SENSOR_URL = "https://www.opensense.network/progprak/beta/api/v1.0/sensors";
+    public static final String OS_LATEST_URL = "https://www.opensense.network/progprak/beta/api/v1.0/sensors/SENSORID/values/last";
+    public static final String OS_OLDEST_URL = "https://www.opensense.network/progprak/beta/api/v1.0/sensors/SENSORID/values/first";
 
 }

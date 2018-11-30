@@ -1,34 +1,41 @@
 package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.OS_SENSOR_URL;
 
 import org.json.JSONObject;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
 public class OSSensor {
 
-    private int id;
-    private int userId;
-    private int measurandId;
-    private Map<String, Double> location;
-    private double altitudeAboveGround;
-    private double directionVertical;
-    private double directionHorizontal;
-    private String sensorModel;
-    private int accuracy;
-    private String attributionText;
-    private String attributionURL;
-    private int licenseId;
+    private final int id;
+    private final int userId;
+    private final int measurandId;
+    private final int unitId;
+    private final double lt;
+    private final double lg;
+    private final double altitudeAboveGround;
+    private final double directionVertical;
+    private final double directionHorizontal;
+    private final String sensorModel;
+    private final int accuracy;
+    private final String attributionText;
+    private final String attributionURL;
+    private final int licenseId;
 
-    public OSSensor(int id, int userId, int measurandId, Map<String, Double> location, double altitudeAboveGround,
+    public OSSensor(int id, int userId, int measurandId, int unitId, double lt, double lg, double altitudeAboveGround,
             double directionVertical, double directionHorizontal, String sensorModel, int accuracy,
             String attributionText, String attributionURL, int licenseId) {
 
         this.id = id;
         this.userId = userId;
         this.measurandId = measurandId;
-        this.location = location;
+        this.unitId = unitId;
+        this.lt = lt;
+        this.lg = lg;
         this.altitudeAboveGround = altitudeAboveGround;
         this.directionVertical = directionVertical;
         this.directionHorizontal = directionHorizontal;
@@ -40,43 +47,88 @@ public class OSSensor {
 
     }
 
-    public OSSensor() {
-        // Empty Init
-    }
+    public static OSSensor getSensorForMeasurand(String measurand) {
 
-    public void initSensor(JSONObject json) {
-
-        int id = Optional.ofNullable(json.getInt("id")).orElse(0);
-        int userId = Optional.ofNullable(json.getInt("userId")).orElse(0);
-        int measurandId = Optional.ofNullable(0).orElse(0);
-        Map<String, Double> location = new HashMap<String, Double>();
-        location = Optional.ofNullable(location).orElse(location);
-        double altitudeAboveGround = Optional.ofNullable(0).orElse(0);
-        double directionVertical = Optional.ofNullable(0).orElse(0);
-        double directionHorizontal = Optional.ofNullable(0).orElse(0);
-        String sensorModel = Optional.ofNullable("").orElse("");
-        int accuracy = Optional.ofNullable(0).orElse(0);
-        String attributionText = Optional.ofNullable("").orElse("");
-        String attributionURL = Optional.ofNullable(json.getString("attributionURL")).orElse("");
-        int licenseId = Optional.ofNullable(0).orElse(0);
-
-        this.id = id;
-        this.userId = userId;
-        this.measurandId = measurandId;
-        this.location = location;
-        this.altitudeAboveGround = altitudeAboveGround;
-        this.directionVertical = directionVertical;
-        this.directionHorizontal = directionHorizontal;
-        this.sensorModel = sensorModel;
-        this.accuracy = accuracy;
-        this.attributionText = attributionText;
-        this.attributionURL = attributionURL;
-        this.licenseId = licenseId;
+        String sID = OSProperties.sensorID(measurand);
+        if (sID == null) {
+            return getClosest(OSProperties.lt(), OSProperties.lg(), measurand);
+        } else {
+            return getSensor(sID);
+        }
 
     }
 
-    public int id() {
-        return this.id;
+    public static OSSensor getClosest(String lt, String lg, String measurand) {
+
+        String refPoint = String.format("(%s, %s)", lt, lg);
+
+        HttpResponse<JsonNode> response;
+        try {
+            response = Unirest.get(OS_SENSOR_URL).queryString("measurandId", OSProperties.measurandId(measurand))
+                    .queryString("refPoint", refPoint).queryString("maxDistance", "5000").queryString("maxSensors", "1")
+                    .asJson();
+
+            JSONObject json = response.getBody().getArray().getJSONObject(0);
+
+            // Store SensorID for future reference in PLIST
+            OSProperties.storeSensorID(measurand, String.format("%d", json.optInt("id", -1)));
+
+            return makeSensor(json);
+
+        } catch (UnirestException error) {
+            error.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public static OSSensor getSensor(String sensorID) {
+
+        HttpResponse<JsonNode> response;
+        try {
+            response = Unirest.get(OS_SENSOR_URL).queryString("id", sensorID).asJson();
+
+            JSONObject json = response.getBody().getArray().getJSONObject(0);
+
+            return makeSensor(json);
+
+        } catch (UnirestException error) {
+            error.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public static OSSensor makeSensor(JSONObject json) {
+
+        // System.out.println("Sensor Make");
+        // System.out.println(json);
+
+        JSONObject location = json.optJSONObject("location");
+
+        int id = json.optInt("id", -1);
+        int userId = json.optInt("userId", -1);
+        int measurandId = json.optInt("measurandId", -1);
+        int unitID = json.optInt("unitId", -1);
+        double lt = location.optDouble("lat", 49.1259);
+        double lg = location.optDouble("lng", 9.1428);
+        double altitudeAboveGround = json.optDouble("altitudeAboveGround", -1.0);
+        double directionVertical = json.optDouble("directionVertical", -1.0);
+        double directionHorizontal = json.optDouble("directionHorizontal", -1.0);
+        String sensorModel = json.optString("sensorModel", "");
+        int accuracy = json.optInt("accuracy", -1);
+        String attributionText = json.optString("attributionText", "");
+        String attributionURL = json.optString("attributionURL", "");
+        int licenseId = json.optInt("licenseId", -1);
+
+        OSSensor sens = new OSSensor(id, userId, measurandId, unitID, lt, lg, altitudeAboveGround, directionVertical,
+                directionHorizontal, sensorModel, accuracy, attributionText, attributionURL, licenseId);
+
+        return sens;
+    }
+
+    public String id() {
+        return String.format("%d", this.id);
     }
 
     public int userId() {
@@ -87,8 +139,16 @@ public class OSSensor {
         return this.measurandId;
     }
 
-    public Map<String, Double> location() {
-        return this.location;
+    public int unitId() {
+        return this.unitId;
+    }
+
+    public double lt() {
+        return this.lt;
+    }
+
+    public double lg() {
+        return this.lg;
     }
 
     public double altitudeAboveGround() {
@@ -121,6 +181,15 @@ public class OSSensor {
 
     public int licenseId() {
         return this.licenseId;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Sensor: \n id:%d \n userId:%d \n measurandId:%d \n unitId:%d \n lt:%f \n lg:%f \n altitudeAboveGround:%f \n directionVertical:%f \n directionHorizontal:%f \n sensorModel:%s \n accuracy:%d \n String:%s \n String:%s \n licenseId:%d",
+                this.id, this.userId, this.measurandId, this.unitId, this.lt, this.lg, this.altitudeAboveGround,
+                this.directionVertical, this.directionHorizontal, this.sensorModel, this.accuracy, this.attributionText,
+                this.attributionURL, this.licenseId);
     }
 
 }
