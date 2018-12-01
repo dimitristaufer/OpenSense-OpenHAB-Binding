@@ -17,6 +17,42 @@
                 <label>Current Humidity</label>
                 <description>This is the current humidity</description>
             </channel-group>
+            <channel-group id="brightness" typeId="brightness">
+                <label>Current Brightness</label>
+                <description>This is the current brightness</description>
+            </channel-group>
+            <channel-group id="air_pressure" typeId="air_pressure">
+                <label>Current Air Pressure</label>
+                <description>This is the current air pressure</description>
+            </channel-group>
+            <channel-group id="wind_speed" typeId="wind_speed">
+                <label>Current Wind Speed</label>
+                <description>This is the current wind speed</description>
+            </channel-group>
+            <channel-group id="wind_direction" typeId="wind_direction">
+                <label>Current Wind Direction</label>
+                <description>This is the current wind direction</description>
+            </channel-group>
+            <channel-group id="cloudiness" typeId="cloudiness">
+                <label>Current Cloudiness</label>
+                <description>This is the current cloudiness</description>
+            </channel-group>
+            <channel-group id="precipitation_amount" typeId="precipitation_amount">
+                <label>Current Precipitation Amount</label>
+                <description>This is the current precipitation amount</description>
+            </channel-group>
+            <channel-group id="precipitation_type" typeId="precipitation_type">
+                <label>Current Precipitation Type</label>
+                <description>This is the current precipitation type</description>
+            </channel-group>
+            <channel-group id="pm10" typeId="pm10">
+                <label>Current pm10 Value</label>
+                <description>This is the current pm10 value</description>
+            </channel-group>
+            <channel-group id="pm2_5" typeId="pm2_5">
+                <label>Current pm2_5 Value</label>
+                <description>This is the current pm2_5 value</description>
+            </channel-group>
          </channel-groups>
    
 
@@ -25,14 +61,41 @@
             <parameter name="latitude" required="false" type="decimal">
                 <label>Latitude</label>
                 <description>Leave blank for auto location (TODO)</description>
+                <default>51.2993</default>
             </parameter>
             <parameter name="longitude" required="false" type="decimal">
                 <label>Longitude</label>
                 <description>Leave blank for auto location (TODO)</description>
+                <default>9.4910</default>
             </parameter>
-            <parameter name="sensorID" required="false" type="integer">
-                <label>SensorID</label>
-                <description>Leave blank for auto SensorId (TODO)</description>
+            <parameter name="distance" required="true" type="text">
+	            <label>Maximum Sensor Distance (in km)</label>
+	            <description>Specify the maximum sensor distance from your specified location.</description>
+	            <options>
+	                <option value="5">10km</option>
+	                <option value="10">25km</option>
+	                <option value="20">50km</option>
+	                <option value="50">100km</option>
+	                <option value="100">200km</option>
+	            </options>
+	            <default>20</default>
+            </parameter>
+            <parameter name="accuracy" required="true" type="text">
+                <label>Minimum Sensor Accuracy</label>
+                <description>Specify the minimum sensor accuracy, 10 being the most accurate.</description>
+                <options>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </options>
+                <default>20</default>
             </parameter>
      
         <parameter name="temperature" required="false" type="boolean"><label>temperature</label></parameter><parameter name="noise" required="false" type="boolean"><label>noise</label></parameter><parameter name="humidity" required="false" type="boolean"><label>humidity</label></parameter><parameter name="brightness" required="false" type="boolean"><label>brightness</label></parameter><parameter name="air_pressure" required="false" type="boolean"><label>air_pressure</label></parameter><parameter name="wind_speed" required="false" type="boolean"><label>wind_speed</label></parameter><parameter name="wind_direction" required="false" type="boolean"><label>wind_direction</label></parameter><parameter name="cloudiness" required="false" type="boolean"><label>cloudiness</label></parameter><parameter name="precipitation_amount" required="false" type="boolean"><label>precipitation_amount</label></parameter><parameter name="precipitation_type" required="false" type="boolean"><label>precipitation_type</label></parameter><parameter name="pm10" required="false" type="boolean"><label>pm10</label></parameter><parameter name="pm2_5" required="false" type="boolean"><label>pm2_5</label></parameter></config-description>
@@ -64,7 +127,9 @@
             <channel id="attributionText" typeId="attributionText"/>
             <channel id="attributionURL" typeId="attributionURL"/>
             <channel id="licenseId" typeId="licenseId"/>
-            <channel id="value" typeId="system.outdoor-temperature"/>
+            <channel id="value" typeId="system.outdoor-temperature">
+                <autoUpdatePolicy>recommend</autoUpdatePolicy>
+            </channel>
         </channels>
     </channel-group-type>
     
@@ -111,7 +176,242 @@
             <channel id="value" typeId="system.atmospheric-humidity"/>
         </channels>
     </channel-group-type>
+    
+    
+    <channel-group-type id="brightness">
+        <label>Current Brightness</label>
+        <description>This is the current brightness</description>
+        <channels>
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
+            <channel id="value" typeId="brightness_level"/>
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="air_pressure">
+        <label>Current Air Pressure</label>
+        <description>This is the current air pressure</description>
+        <channels>
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
+            <channel id="value" typeId="system.barometric-pressure"/>
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="wind_speed">
+        <label>Current Wind Speed</label>
+        <description>This is the current wind speed</description>
+        <channels>
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
+            <channel id="value" typeId="system.wind-speed"/>
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="wind_direction">
+        <label>Current Wind Direction</label>
+        <description>This is the current wind direction</description>
+        <channels>
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
+            <channel id="value" typeId="system.wind-direction"/>
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="cloudiness">
+        <label>Current Cloudiness</label>
+        <description>This is the current cloudiness</description>
+        <channels>
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
+            <channel id="value" typeId="cloudiness_level"/>
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="precipitation_amount">
+        <label>Current Precipitation Amount</label>
+        <description>This is the current precipitation amount</description>
+        <channels>
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
+            <channel id="value" typeId="precipitation_level"/>
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="precipitation_type">
+        <label>Current Precipitation Type</label>
+        <description>This is the current precipitation type</description>
+        <channels>
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
+            <channel id="value" typeId="precipitation_type_level"/>
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="pm10">
+        <label>Current pm10 Value</label>
+        <description>This is the current pm10 value</description>
+        <channels>
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
+            <channel id="value" typeId="pm10_level"/>
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="pm2_5">
+        <label>Current pm2_5 Value</label>
+        <description>This is the current pm2_5 value</description>
+        <channels>
+            <channel id="id" typeId="id"/>
+            <channel id="userId" typeId="userId"/>
+            <channel id="measurandId" typeId="measurandId"/>
+            <channel id="unitId" typeId="unitId"/>
+            <channel id="location" typeId="location"/>
+            <channel id="altitudeAboveGround" typeId="altitudeAboveGround"/>
+            <channel id="directionVertical" typeId="directionVertical"/>
+            <channel id="directionHorizontal" typeId="directionHorizontal"/>
+            <channel id="sensorModel" typeId="sensorModel"/>
+            <channel id="accuracy" typeId="accuracy"/>
+            <channel id="attributionText" typeId="attributionText"/>
+            <channel id="attributionURL" typeId="attributionURL"/>
+            <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
+            <channel id="value" typeId="pm2_5_level"/>
+        </channels>
+    </channel-group-type>
+    
+    
+    <channel-type advanced="false" id="pm2_5_level">
+        <item-type>Number</item-type>
+        <label>pm2_5 Level</label>
+        <state pattern="%f ug/m3" readOnly="false"/>
+    </channel-type> 
+    
+    <channel-type advanced="false" id="pm10_level">
+        <item-type>Number</item-type>
+        <label>pm10 Level</label>
+        <state pattern="%f ug/m3" readOnly="false"/>
+    </channel-type> 
         
+    <channel-type advanced="false" id="precipitation_type_level">
+        <item-type>Number</item-type>
+        <label>Precipitation Type Level</label>
+        <state pattern="%f" readOnly="false"/>
+    </channel-type> 
+    
+    <channel-type advanced="false" id="precipitation_level">
+        <item-type>Number</item-type>
+        <label>Precipitation Level</label>
+        <state pattern="%f mm" readOnly="false"/>
+    </channel-type> 
+        
+    <channel-type advanced="false" id="cloudiness_level">
+        <item-type>Number</item-type>
+        <label>Cloudiness Level</label>
+        <state pattern="%f" readOnly="false"/>
+    </channel-type>
+  
+    <channel-type advanced="false" id="brightness_level">
+        <item-type>Number</item-type>
+        <label>Brightness Level</label>
+        <state pattern="%f lux" readOnly="false"/>
+    </channel-type>
      
     <channel-type advanced="false" id="noise_level">
         <item-type>Number</item-type>

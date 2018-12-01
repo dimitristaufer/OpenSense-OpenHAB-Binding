@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
@@ -20,8 +19,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 public class OSProperties {
 
     static Properties prop = new Properties();
-    static InputStream input = null;
-    static OutputStream output = null;
 
     static File file = new File(
             OpenSenseNetworkHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath());
@@ -32,21 +29,15 @@ public class OSProperties {
 
         try {
             prop.load(new FileInputStream(file.getPath() + "/OS.properties"));
-            String key = String.format("%s_%s)", "sensorId", measurand); // ex. "sensorId_temperature"
+            String key = String.format("%s_%s", "sensorId", measurand); // ex. "sensorId_temperature"
+            System.out.println("Used Key:" + key);
+            System.out.println("Loaded Property:" + prop.getProperty(key));
+            System.out.println("Values: " + prop.values());
             return prop.getProperty(key);
 
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
         }
 
     }
@@ -70,15 +61,6 @@ public class OSProperties {
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
         }
 
     }
@@ -102,15 +84,6 @@ public class OSProperties {
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
         }
 
     }
@@ -127,15 +100,6 @@ public class OSProperties {
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
         }
     }
 
@@ -161,6 +125,8 @@ public class OSProperties {
 
     public static void storeMeasurandID(String measurand, String ID) {
 
+        OutputStream output = null;
+
         try {
             output = new FileOutputStream(file.getPath() + "/OS.properties");
             String key = String.format("%s_%s", "measurandId", measurand); // ex. "measurandId_temperature"
@@ -170,21 +136,13 @@ public class OSProperties {
         } catch (IOException io) {
             io.printStackTrace();
             System.out.println("ERROR: Writing SensorID to Properties");
-        } finally {
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("ERROR: Writing SensorID to Properties");
-                }
-            }
-
         }
 
     }
 
     public static void storeSensorID(String measurand, String sensorID) {
+
+        OutputStream output = null;
 
         try {
             output = new FileOutputStream(file.getPath() + "/OS.properties");
@@ -195,21 +153,13 @@ public class OSProperties {
         } catch (IOException io) {
             io.printStackTrace();
             System.out.println("ERROR: Writing SensorID to Properties");
-        } finally {
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("ERROR: Writing SensorID to Properties");
-                }
-            }
-
         }
 
     }
 
     public static void storeLt(String lt) {
+
+        OutputStream output = null;
 
         try {
             output = new FileOutputStream(file.getPath() + "/OS.properties");
@@ -219,21 +169,13 @@ public class OSProperties {
         } catch (IOException io) {
             io.printStackTrace();
             System.out.println("ERROR: Writing SensorID to Properties");
-        } finally {
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("ERROR: Writing SensorID to Properties");
-                }
-            }
-
         }
 
     }
 
     public static void storeLg(String lg) {
+
+        OutputStream output = null;
 
         try {
             output = new FileOutputStream(file.getPath() + "/OS.properties");
@@ -243,16 +185,6 @@ public class OSProperties {
         } catch (IOException io) {
             io.printStackTrace();
             System.out.println("ERROR: Writing SensorID to Properties");
-        } finally {
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("ERROR: Writing SensorID to Properties");
-                }
-            }
-
         }
 
     }

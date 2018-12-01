@@ -73,6 +73,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                 // System.out.println("Updating Channel: '" + measurand + "' using Sensor:");
                 // System.out.println(sensor.toString());
                 updateState(channelUID, getCurrentValue(sensor));
+                // updateState(channelUID, OnOffType.OFF);
             } else if (thingType.equals("contribute")) {
                 /* do nothing yet */
             }
@@ -87,7 +88,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
     @SuppressWarnings("rawtypes")
     public QuantityType getCurrentValue(OSSensor sensor) {
 
-        System.out.println("Getting current val for sensorid:" + sensor.id());
+        // System.out.println("Getting current val for sensorid:" + sensor.id());
 
         HttpResponse<JsonNode> response;
         try {

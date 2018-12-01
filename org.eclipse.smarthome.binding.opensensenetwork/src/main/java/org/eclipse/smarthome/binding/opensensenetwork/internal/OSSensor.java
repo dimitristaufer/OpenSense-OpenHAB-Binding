@@ -65,10 +65,12 @@ public class OSSensor {
         HttpResponse<JsonNode> response;
         try {
             response = Unirest.get(OS_SENSOR_URL).queryString("measurandId", OSProperties.measurandId(measurand))
-                    .queryString("refPoint", refPoint).queryString("maxDistance", "5000").queryString("maxSensors", "1")
-                    .asJson();
+                    .queryString("refPoint", refPoint).queryString("maxDistance", "20000")
+                    .queryString("maxSensors", "1").asJson();
 
             JSONObject json = response.getBody().getArray().getJSONObject(0);
+
+            System.out.println("Neasrest Sensor here:" + json);
 
             // Store SensorID for future reference in PLIST
             OSProperties.storeSensorID(measurand, String.format("%d", json.optInt("id", -1)));
@@ -77,6 +79,7 @@ public class OSSensor {
 
         } catch (UnirestException error) {
             error.printStackTrace();
+            System.out.println("No Sensor found!!!!");
             return null;
         }
 
