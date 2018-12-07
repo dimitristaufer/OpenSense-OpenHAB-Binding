@@ -17,6 +17,7 @@ import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseN
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.core.Configuration;
+import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.library.types.QuantityType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -69,11 +70,11 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
         if (command instanceof RefreshType) {
             if (thingType.equals("receive")) {
+                updateState(channelUID, OnOffType.OFF);
                 OSSensor sensor = OSSensor.getSensorForMeasurand(measurand);
                 // System.out.println("Updating Channel: '" + measurand + "' using Sensor:");
                 // System.out.println(sensor.toString());
                 updateState(channelUID, getCurrentValue(sensor));
-                // updateState(channelUID, OnOffType.OFF);
             } else if (thingType.equals("contribute")) {
                 /* do nothing yet */
             }

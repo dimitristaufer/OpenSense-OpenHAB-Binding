@@ -98,7 +98,7 @@
                 <default>20</default>
             </parameter>
      
-        <parameter name="temperature" required="false" type="boolean"><label>temperature</label></parameter><parameter name="noise" required="false" type="boolean"><label>noise</label></parameter><parameter name="humidity" required="false" type="boolean"><label>humidity</label></parameter><parameter name="brightness" required="false" type="boolean"><label>brightness</label></parameter><parameter name="air_pressure" required="false" type="boolean"><label>air_pressure</label></parameter><parameter name="wind_speed" required="false" type="boolean"><label>wind_speed</label></parameter><parameter name="wind_direction" required="false" type="boolean"><label>wind_direction</label></parameter><parameter name="cloudiness" required="false" type="boolean"><label>cloudiness</label></parameter><parameter name="precipitation_amount" required="false" type="boolean"><label>precipitation_amount</label></parameter><parameter name="precipitation_type" required="false" type="boolean"><label>precipitation_type</label></parameter><parameter name="pm10" required="false" type="boolean"><label>pm10</label></parameter><parameter name="pm2_5" required="false" type="boolean"><label>pm2_5</label></parameter></config-description>
+        <!--  <parameter name="temperature" required="false" type="boolean"><label>temperature</label></parameter><parameter name="noise" required="false" type="boolean"><label>noise</label></parameter><parameter name="humidity" required="false" type="boolean"><label>humidity</label></parameter><parameter name="brightness" required="false" type="boolean"><label>brightness</label></parameter><parameter name="air_pressure" required="false" type="boolean"><label>air_pressure</label></parameter><parameter name="wind_speed" required="false" type="boolean"><label>wind_speed</label></parameter><parameter name="wind_direction" required="false" type="boolean"><label>wind_direction</label></parameter><parameter name="cloudiness" required="false" type="boolean"><label>cloudiness</label></parameter><parameter name="precipitation_amount" required="false" type="boolean"><label>precipitation_amount</label></parameter><parameter name="precipitation_type" required="false" type="boolean"><label>precipitation_type</label></parameter><parameter name="pm10" required="false" type="boolean"><label>pm10</label></parameter><parameter name="pm2_5" required="false" type="boolean"><label>pm2_5</label></parameter><parameter name="solar_radiation" required="false" type="boolean"><label>solar_radiation</label></parameter><parameter name="CO" required="false" type="boolean"><label>CO</label></parameter><parameter name="NO2" required="false" type="boolean"><label>NO2</label></parameter><parameter name="O3" required="false" type="boolean"><label>O3</label></parameter><parameter name="SO2" required="false" type="boolean"><label>SO2</label></parameter>--><parameter name="temperature" required="false" type="boolean"><label>temperature</label></parameter><parameter name="noise" required="false" type="boolean"><label>noise</label></parameter><parameter name="humidity" required="false" type="boolean"><label>humidity</label></parameter><parameter name="brightness" required="false" type="boolean"><label>brightness</label></parameter><parameter name="air_pressure" required="false" type="boolean"><label>air_pressure</label></parameter><parameter name="wind_speed" required="false" type="boolean"><label>wind_speed</label></parameter><parameter name="wind_direction" required="false" type="boolean"><label>wind_direction</label></parameter><parameter name="cloudiness" required="false" type="boolean"><label>cloudiness</label></parameter><parameter name="precipitation_amount" required="false" type="boolean"><label>precipitation_amount</label></parameter><parameter name="precipitation_type" required="false" type="boolean"><label>precipitation_type</label></parameter><parameter name="pm10" required="false" type="boolean"><label>pm10</label></parameter><parameter name="pm2_5" required="false" type="boolean"><label>pm2_5</label></parameter><parameter name="solar_radiation" required="false" type="boolean"><label>solar_radiation</label></parameter><parameter name="CO" required="false" type="boolean"><label>CO</label></parameter><parameter name="NO2" required="false" type="boolean"><label>NO2</label></parameter><parameter name="O3" required="false" type="boolean"><label>O3</label></parameter><parameter name="SO2" required="false" type="boolean"><label>SO2</label></parameter></config-description>
 
 
 	</thing-type>
@@ -127,8 +127,8 @@
             <channel id="attributionText" typeId="attributionText"/>
             <channel id="attributionURL" typeId="attributionURL"/>
             <channel id="licenseId" typeId="licenseId"/>
+            <channel id="observationTime" typeId="observationTime"/>
             <channel id="value" typeId="system.outdoor-temperature">
-                <autoUpdatePolicy>recommend</autoUpdatePolicy>
             </channel>
         </channels>
     </channel-group-type>
@@ -451,7 +451,7 @@
         <item-type>String</item-type>
         <label>location</label>
         <description>No Description</description>
-        <state pattern="lat: %s, long: %s" readOnly="false"/>
+        <state pattern="%s" readOnly="false"/>
     </channel-type>
     
     <channel-type advanced="true" id="altitudeAboveGround">

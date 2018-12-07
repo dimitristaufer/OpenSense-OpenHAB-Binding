@@ -1,13 +1,9 @@
 package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
-import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.OS_MEASURANDS_URL;
+import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Properties;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import org.json.JSONObject;
 
@@ -18,89 +14,103 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 public class OSProperties {
 
-    static Properties prop = new Properties();
-
-    static File file = new File(
-            OpenSenseNetworkHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    private static Preferences prefs;
 
     /* TODO: Add timeout for values */
 
-    public static String sensorID(String measurand) {
+    public static String validateAndRemoveTimestamp(String value) {
 
+        // FORMAT: VALUE#TIMESTAMP
+
+        return null;
+    }
+
+    private void removeValue(String key) {
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        prefs.remove(key);
+    }
+
+    public static void removeAllValues() {
+
+        // Preserve lat and long
+        String lt = lt();
+        String lg = lg();
+
+        prefs = Preferences.userRoot().node(BINDING_ID);
         try {
-            prop.load(new FileInputStream(file.getPath() + "/OS.properties"));
-            String key = String.format("%s_%s", "sensorId", measurand); // ex. "sensorId_temperature"
-            System.out.println("Used Key:" + key);
-            System.out.println("Loaded Property:" + prop.getProperty(key));
-            System.out.println("Values: " + prop.values());
-            return prop.getProperty(key);
+            prefs.clear();
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
+            prefs.put("lt", lt);
+            prefs.put("lg", lg);
+
+        } catch (BackingStoreException e) {
+            e.printStackTrace();
         }
+    }
+
+    public static String sensorId(String measurand) {
+
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String key = String.format("%s_%s", "sensorId", measurand); // ex. "sensorId_temperature"
+        String value = prefs.get(key, "0");
+        if (value.equals("-1")) {
+            return "0";
+        }
+        // System.out.println("Used Key:" + key);
+        // System.out.println("Loaded Value:" + value);
+        return value.toString();
+
+    }
+
+    public static OSSensor sensor(String sensorId) {
+
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String key = String.format("%s_%s", "sensor", sensorId); // ex. "sensor_temperature"
+        String value = prefs.get(key, "0");
+
+        System.out.println("Used Key:" + key);
+        System.out.println("Loaded Value:" + value);
+        return OSSensor.fromString(value);
 
     }
 
     public static String lt() {
 
-        try {
-            prop.load(new FileInputStream(file.getPath() + "/OS.properties"));
-            String lt = prop.getProperty("lt");
-            if (lt != null) {
-                if (lt == "auto") {
-                    // TODO: Get Lt based on IP
-                    return String.format("%f", 52.5167); // Berlin
-                } else {
-                    return prop.getProperty("lt");
-                }
-            } else {
-                return null;
-            }
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String lt = prefs.get("lt", "52.5167");
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
+        if (lt == "auto") {
+            // TODO: Get lat based on IP
+            return String.format("%f", 52.5167); // Berlin
+        } else {
+            return lt;
         }
 
     }
 
     public static String lg() {
 
-        try {
-            prop.load(new FileInputStream(file.getPath() + "/OS.properties"));
-            String lt = prop.getProperty("lg");
-            if (lt != null) {
-                if (lt == "auto") {
-                    // TODO: Get Lg based on IP
-                    return String.format("%f", 13.4000); // Berlin
-                } else {
-                    return prop.getProperty("lg");
-                }
-            } else {
-                return null;
-            }
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String lg = prefs.get("lg", "13.4000");
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
+        if (lg == "auto") {
+            // TODO: Get long based on IP
+            return String.format("%f", 13.4000); // Berlin
+        } else {
+            return lg;
         }
 
     }
 
     public static Integer measurandId(String measurand) {
-        try {
-            prop.load(new FileInputStream(file.getPath() + "/OS.properties"));
-            String measurandId = prop.getProperty(String.format("%s_%s)", "measurandId", measurand));
-            if (measurandId == null) {
-                return (remoteMeasurandId(measurand));
-            }
-            return Integer.parseInt(measurandId);
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String measurandId = prefs.get(String.format("%s_%s)", "measurandId", measurand), "null");
+        if (measurandId == "null") {
+            return (remoteMeasurandId(measurand));
         }
+        return Integer.parseInt(measurandId);
+
     }
 
     private static Integer remoteMeasurandId(String measurand) {
@@ -125,67 +135,42 @@ public class OSProperties {
 
     public static void storeMeasurandID(String measurand, String ID) {
 
-        OutputStream output = null;
-
-        try {
-            output = new FileOutputStream(file.getPath() + "/OS.properties");
-            String key = String.format("%s_%s", "measurandId", measurand); // ex. "measurandId_temperature"
-            prop.setProperty(key, ID);
-            prop.store(output, null);
-
-        } catch (IOException io) {
-            io.printStackTrace();
-            System.out.println("ERROR: Writing SensorID to Properties");
-        }
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String key = String.format("%s_%s", "measurandId", measurand); // ex. "measurandId_temperature"
+        prefs.put(key, ID);
 
     }
 
     public static void storeSensorID(String measurand, String sensorID) {
 
-        OutputStream output = null;
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String key = String.format("%s_%s", "sensorId", measurand); // ex. "sensorId_temperature"
+        prefs.put(key, sensorID);
 
-        try {
-            output = new FileOutputStream(file.getPath() + "/OS.properties");
-            String key = String.format("%s_%s", "sensorId", measurand); // ex. "sensorId_temperature"
-            prop.setProperty(key, sensorID);
-            prop.store(output, null);
+    }
 
-        } catch (IOException io) {
-            io.printStackTrace();
-            System.out.println("ERROR: Writing SensorID to Properties");
-        }
+    public static void storeSensor(OSSensor sensor, String sensorID) {
+
+        System.out.println("storing sensor");
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String key = String.format("%s_%s", "sensor", sensorID); // ex. "sensor_temperature"
+        System.out.println("Key: " + key);
+        System.out.println("Value: " + sensor.toString());
+        prefs.put(key, sensor.toString());
 
     }
 
     public static void storeLt(String lt) {
 
-        OutputStream output = null;
-
-        try {
-            output = new FileOutputStream(file.getPath() + "/OS.properties");
-            prop.setProperty("lt", lt);
-            prop.store(output, null);
-
-        } catch (IOException io) {
-            io.printStackTrace();
-            System.out.println("ERROR: Writing SensorID to Properties");
-        }
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        prefs.put("lt", lt);
 
     }
 
     public static void storeLg(String lg) {
 
-        OutputStream output = null;
-
-        try {
-            output = new FileOutputStream(file.getPath() + "/OS.properties");
-            prop.setProperty("lg", lg);
-            prop.store(output, null);
-
-        } catch (IOException io) {
-            io.printStackTrace();
-            System.out.println("ERROR: Writing SensorID to Properties");
-        }
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        prefs.put("lg", lg);
 
     }
 

@@ -28,11 +28,13 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
 @NonNullByDefault
 public class OpenSenseNetworkBindingConstants {
 
-    private static final String BINDING_ID = "opensensenetwork";
+    public static final String BINDING_ID = "opensensenetwork";
 
     // List of all Thing Type UIDs
     public static final ThingTypeUID THING_TYPE_RECEIVE = new ThingTypeUID(BINDING_ID, "receive");
     public static final ThingTypeUID THING_TYPE_CONTRIBUTE = new ThingTypeUID(BINDING_ID, "contribute");
+
+    public static final Boolean DEBUG = false;
 
     // List of all Channel ids
     // public static final String CHANNEL_TEMPERATURE = "temperature";

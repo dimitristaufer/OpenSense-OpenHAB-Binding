@@ -1,6 +1,9 @@
 package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
-import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.OS_SENSOR_URL;
+import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -47,12 +50,19 @@ public class OSSensor {
 
     }
 
-    public static OSSensor getSensorForMeasurand(String measurand) {
+    public synchronized static OSSensor getSensorForMeasurand(String measurand) {
 
-        String sID = OSProperties.sensorID(measurand);
-        if (sID == null) {
+        if (DEBUG) {
+            // DEBUG: Clear local cache
+            OSProperties.removeAllValues();
+        }
+
+        String sID = OSProperties.sensorId(measurand);
+        if (sID.equals("0")) {
+            System.out.println("Searching nearest sensor for " + measurand + ", because no local sensorId was found");
             return getClosest(OSProperties.lt(), OSProperties.lg(), measurand);
         } else {
+            System.out.println("Found sensorId for " + measurand + ", now getting sensor locally");
             return getSensor(sID);
         }
 
@@ -70,30 +80,34 @@ public class OSSensor {
 
             JSONObject json = response.getBody().getArray().getJSONObject(0);
 
-            System.out.println("Neasrest Sensor here:" + json);
+            System.out.println("Nearest Sensor here:" + json);
 
-            // Store SensorID for future reference in PLIST
-            OSProperties.storeSensorID(measurand, String.format("%d", json.optInt("id", -1)));
+            // Store SensorID for future reference in preferences
+            String sensorId = String.format("%d", json.optInt("id", -1));
+            OSProperties.storeSensorID(measurand, sensorId);
 
-            return makeSensor(json);
+            return makeSensor(json, sensorId);
 
         } catch (UnirestException error) {
             error.printStackTrace();
-            System.out.println("No Sensor found!!!!");
             return null;
         }
 
     }
 
-    public static OSSensor getSensor(String sensorID) {
+    public static OSSensor getSensor(String sensorId) {
+
+        return OSProperties.sensor(sensorId);
+
+    }
+
+    public static OSSensor getRemoteSensor(String sensorId) {
 
         HttpResponse<JsonNode> response;
         try {
-            response = Unirest.get(OS_SENSOR_URL).queryString("id", sensorID).asJson();
-
+            response = Unirest.get(OS_SENSOR_URL).queryString("id", sensorId).asJson();
             JSONObject json = response.getBody().getArray().getJSONObject(0);
-
-            return makeSensor(json);
+            return makeSensor(json, sensorId); // Create Sensor based on server data
 
         } catch (UnirestException error) {
             error.printStackTrace();
@@ -102,7 +116,7 @@ public class OSSensor {
 
     }
 
-    public static OSSensor makeSensor(JSONObject json) {
+    public static OSSensor makeSensor(JSONObject json, String sensorId) {
 
         // System.out.println("Sensor Make");
         // System.out.println(json);
@@ -126,6 +140,8 @@ public class OSSensor {
 
         OSSensor sens = new OSSensor(id, userId, measurandId, unitID, lt, lg, altitudeAboveGround, directionVertical,
                 directionHorizontal, sensorModel, accuracy, attributionText, attributionURL, licenseId);
+
+        OSProperties.storeSensor(sens, sensorId);
 
         return sens;
     }
@@ -189,10 +205,41 @@ public class OSSensor {
     @Override
     public String toString() {
         return String.format(
-                "Sensor: \n id:%d \n userId:%d \n measurandId:%d \n unitId:%d \n lt:%f \n lg:%f \n altitudeAboveGround:%f \n directionVertical:%f \n directionHorizontal:%f \n sensorModel:%s \n accuracy:%d \n String:%s \n String:%s \n licenseId:%d",
+                "id#%d\nuserId#%d\nmeasurandId#%d\nunitId#%d\nlat#%f\nlng#%f\naltitudeAboveGround#%f\ndirectionVertical#%f\ndirectionHorizontal#%f\nsensorModel#%s\naccuracy#%d\nattributionText#%s\nattributionURL#%s\nlicenseId#%d",
                 this.id, this.userId, this.measurandId, this.unitId, this.lt, this.lg, this.altitudeAboveGround,
                 this.directionVertical, this.directionHorizontal, this.sensorModel, this.accuracy, this.attributionText,
                 this.attributionURL, this.licenseId);
+    }
+
+    public static OSSensor fromString(String sensorString) {
+        String sString = sensorString;
+        String[] lines = sString.split(System.getProperty("line.separator"));
+        Map<String, String> map = new HashMap<String, String>();
+        for (String line : lines) {
+            String[] key_value = line.split("#");
+            map.put(key_value[0], key_value[1]);
+        }
+
+        int id = Integer.parseInt(map.get("id"));
+        int userId = Integer.parseInt(map.get("userId"));
+        int measurandId = Integer.parseInt(map.get("measurandId"));
+        int unitID = Integer.parseInt(map.get("unitId"));
+        double lt = Double.parseDouble(map.get("lat"));
+        double lg = Double.parseDouble(map.get("lng"));
+        double altitudeAboveGround = Double.parseDouble(map.get("altitudeAboveGround"));
+        double directionVertical = Double.parseDouble(map.get("directionVertical"));
+        double directionHorizontal = Double.parseDouble(map.get("directionHorizontal"));
+        String sensorModel = map.get("sensorModel");
+        int accuracy = Integer.parseInt(map.get("accuracy"));
+        String attributionText = map.get("attributionText");
+        String attributionURL = map.get("attributionURL");
+        int licenseId = Integer.parseInt(map.get("licenseId"));
+
+        OSSensor sens = new OSSensor(id, userId, measurandId, unitID, lt, lg, altitudeAboveGround, directionVertical,
+                directionHorizontal, sensorModel, accuracy, attributionText, attributionURL, licenseId);
+
+        return sens;
+
     }
 
 }
