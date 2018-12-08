@@ -34,7 +34,7 @@ public class OpenSenseNetworkBindingConstants {
     public static final ThingTypeUID THING_TYPE_RECEIVE = new ThingTypeUID(BINDING_ID, "receive");
     public static final ThingTypeUID THING_TYPE_CONTRIBUTE = new ThingTypeUID(BINDING_ID, "contribute");
 
-    public static final Boolean DEBUG = false;
+    public static final Boolean SERVER_ONLY_MODE = true;
 
     // List of all Channel ids
     // public static final String CHANNEL_TEMPERATURE = "temperature";

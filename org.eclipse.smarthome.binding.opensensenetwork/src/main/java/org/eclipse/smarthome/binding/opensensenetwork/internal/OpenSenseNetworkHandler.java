@@ -15,7 +15,6 @@ package org.eclipse.smarthome.binding.opensensenetwork.internal;
 import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.*;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.OnOffType;
@@ -57,8 +56,8 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
     // private final Logger logger = LoggerFactory.getLogger(OpenSenseNetworkHandler.class);
     // private final ArrayList<String> desired_channels = new ArrayList<>();
 
-    @Nullable
-    private OpenSenseNetworkConfiguration config;
+    // @Nullable
+    // private OpenSenseNetworkConfiguration config;
 
     public OpenSenseNetworkHandler(Thing thing) {
         super(thing);
@@ -67,41 +66,42 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
 
-        String thingType = channelUID.getThingUID().getThingTypeUID().getId(); // ex. "receive"
-        String groupId = String.format(channelUID.getGroupId()); // ex. "temperature"
-        String[] channelUIDstring = channelUID.toString().split("#");
-        // ex. "opensensenetwork:receive:0e4604b1:temperature#value"
-        String baseId = channelUIDstring[0];
-        // ex. "opensensenetwork:receive:0e4604b1:temperature"
-        String channelId = channelUIDstring[1];
-        // ex. "value"
-
         System.out.println("Command Type: " + command.toString());
 
         if (command instanceof RefreshType) {
-            if (thingType.equals("receive")) {
-
-                /*
-                 * && channelId.equals("value")
-                 *
-                 * This only get's called when the channelId equals 'value' to prevent server queries for every
-                 * channelId (sensorModel, location, directionVertical, etc..)
-                 *
-                 * Instead we call it once and manually update all the channel states using the OSValue object
-                 */
-
-                offAllChannels(channelUID.getId().split("#")[0]);
-
-                OSSensor sensor = OSSensor.getSensorForMeasurand(groupId);
-                // System.out.println("Updating Channel: '" + groupId + "' using Sensor:" + sensor.toString());
-                updateChannels(getCurrentValue(sensor), channelUID.getId().split("#")[0]);
-
-            } else if (thingType.equals("contribute")) {
-                /* do nothing yet */
-            } else {
-                /* doesn't exist */
-            }
+            refreshChannel(channelUID);
         }
+    }
+
+    public void refreshChannel(ChannelUID channelUID) {
+
+        String thingType = channelUID.getThingUID().getThingTypeUID().getId(); // ex. "receive"
+        String groupId = String.format(channelUID.getGroupId()); // ex. "temperature"
+        String baseId = channelUID.getId().split("#")[0];
+
+        if (thingType.equals("receive")) {
+
+            /*
+             * && channelId.equals("value")
+             *
+             * This only get's called when the channelId equals 'value' to prevent server queries for every
+             * channelId (sensorModel, location, directionVertical, etc..)
+             *
+             * Instead we call it once and manually update all the channel states using the OSValue object
+             */
+
+            offAllChannels(baseId);
+
+            OSSensor sensor = OSSensor.getSensorForMeasurand(groupId);
+            // System.out.println("Updating Channel: '" + groupId + "' using Sensor:" + sensor.toString());
+            updateChannels(getCurrentValue(sensor), baseId);
+
+        } else if (thingType.equals("contribute")) {
+            /* do nothing yet */
+        } else {
+            /* doesn't exist */
+        }
+
     }
 
     private void offAllChannels(String baseId) {
@@ -173,22 +173,25 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public void initialize() {
 
-        if (DEBUG) {
-            // DEBUG: Clear local cache -> Force server values
-            OSProperties.removeAllValues();
-        }
-
         updateStatus(ThingStatus.UNKNOWN);
 
+        Boolean removeAllSensors = false;
         if (thing.getThingTypeUID().equals(THING_TYPE_RECEIVE)) {
 
             Configuration config = getThing().getConfiguration();
             if (config.get("latitude") != null && config.get("longitude") != null) {
                 String lt = config.get("latitude").toString();
                 String lg = config.get("longitude").toString();
+
+                if (!(lt.equals(OSProperties.lt()) || !(lg.equals(OSProperties.lg())))) {
+                    // New location -> clear local cache
+                    removeAllSensors = true;
+                }
+
                 if (lt != "" & lg != "") {
                     OSProperties.storeLt(config.get("latitude").toString());
                     OSProperties.storeLg(config.get("longitude").toString());
@@ -197,20 +200,53 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                     OSProperties.storeLg("auto");
                 }
             }
+            if (config.get("distance") != null) {
+                if (!(config.get("distance").equals(OSProperties.maxDistance()))) {
+                    // New maxDistance -> clear local cache
+                    removeAllSensors = true;
+                }
+                OSProperties.storeMaxDistance(config.get("distance").toString());
+            }
+            if (config.get("accuracy") != null) {
+                if (!(config.get("accuracy").equals(OSProperties.minAccuracy()))) {
+                    // New minAccuracy -> clear local cache
+                    removeAllSensors = true;
+                }
+                OSProperties.storeMinAccuracy(config.get("accuracy").toString());
+            }
 
-            // Map<String, Object> parameters = config.getProperties();
-            //
-            // // A list of the user selected measurandIDs
-            // // (for now we don't use this!)
-            // for (Entry<String, Object> parameter : parameters.entrySet()) {
-            // if (parameter.getValue().equals(true)) {
-            // desired_channels.add(parameter.getKey());
-            // }
-            // }
+            if (removeAllSensors) {
+                OSProperties.removeAllSensors();
+            }
 
             updateStatus(ThingStatus.ONLINE);
+
+            // scheduler.scheduleWithFixedDelay(new Runnable() {
+            // @Override
+            // public void run() {
+            // try {
+            // // update Values
+            // // initialize();
+            // System.out.println("Scheduled Update");
+            //
+            // for (Channel channel : getThing().getChannels()) {
+            // refreshChannel(channel.getUID());
+            // }
+            //
+            // } catch (Exception e) {
+            // e.printStackTrace();
+            // }
+            // }
+            // }, 0, 12, TimeUnit.SECONDS);
+
         }
 
+    }
+
+    @Override
+    public void dispose() {
+        System.out.println("scheduler shutdown");
+        scheduler.shutdown();
     }
 
 }

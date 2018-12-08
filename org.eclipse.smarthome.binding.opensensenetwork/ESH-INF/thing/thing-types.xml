@@ -69,16 +69,16 @@
                 <default>9.4910</default>
             </parameter>
             <parameter name="distance" required="true" type="text">
-	            <label>Maximum Sensor Distance (in km)</label>
+	            <label>Maximum Sensor Distance</label>
 	            <description>Specify the maximum sensor distance from your specified location.</description>
 	            <options>
-	                <option value="5">10km</option>
-	                <option value="10">25km</option>
-	                <option value="20">50km</option>
-	                <option value="50">100km</option>
-	                <option value="100">200km</option>
+	                <option value="10000">10 km</option>
+	                <option value="25000">25 km</option>
+	                <option value="50000">50km</option>
+	                <option value="100000">100km</option>
+	                <option value="200000">200km</option>
 	            </options>
-	            <default>20</default>
+	            <default>25000</default>
             </parameter>
             <parameter name="accuracy" required="true" type="text">
                 <label>Minimum Sensor Accuracy</label>
@@ -95,10 +95,10 @@
                     <option value="9">9</option>
                     <option value="10">10</option>
                 </options>
-                <default>20</default>
+                <default>1</default>
             </parameter>
      
-        <!--  <parameter name="temperature" required="false" type="boolean"><label>temperature</label></parameter><parameter name="noise" required="false" type="boolean"><label>noise</label></parameter><parameter name="humidity" required="false" type="boolean"><label>humidity</label></parameter><parameter name="brightness" required="false" type="boolean"><label>brightness</label></parameter><parameter name="air_pressure" required="false" type="boolean"><label>air_pressure</label></parameter><parameter name="wind_speed" required="false" type="boolean"><label>wind_speed</label></parameter><parameter name="wind_direction" required="false" type="boolean"><label>wind_direction</label></parameter><parameter name="cloudiness" required="false" type="boolean"><label>cloudiness</label></parameter><parameter name="precipitation_amount" required="false" type="boolean"><label>precipitation_amount</label></parameter><parameter name="precipitation_type" required="false" type="boolean"><label>precipitation_type</label></parameter><parameter name="pm10" required="false" type="boolean"><label>pm10</label></parameter><parameter name="pm2_5" required="false" type="boolean"><label>pm2_5</label></parameter><parameter name="solar_radiation" required="false" type="boolean"><label>solar_radiation</label></parameter><parameter name="CO" required="false" type="boolean"><label>CO</label></parameter><parameter name="NO2" required="false" type="boolean"><label>NO2</label></parameter><parameter name="O3" required="false" type="boolean"><label>O3</label></parameter><parameter name="SO2" required="false" type="boolean"><label>SO2</label></parameter>--><parameter name="temperature" required="false" type="boolean"><label>temperature</label></parameter><parameter name="noise" required="false" type="boolean"><label>noise</label></parameter><parameter name="humidity" required="false" type="boolean"><label>humidity</label></parameter><parameter name="brightness" required="false" type="boolean"><label>brightness</label></parameter><parameter name="air_pressure" required="false" type="boolean"><label>air_pressure</label></parameter><parameter name="wind_speed" required="false" type="boolean"><label>wind_speed</label></parameter><parameter name="wind_direction" required="false" type="boolean"><label>wind_direction</label></parameter><parameter name="cloudiness" required="false" type="boolean"><label>cloudiness</label></parameter><parameter name="precipitation_amount" required="false" type="boolean"><label>precipitation_amount</label></parameter><parameter name="precipitation_type" required="false" type="boolean"><label>precipitation_type</label></parameter><parameter name="pm10" required="false" type="boolean"><label>pm10</label></parameter><parameter name="pm2_5" required="false" type="boolean"><label>pm2_5</label></parameter><parameter name="solar_radiation" required="false" type="boolean"><label>solar_radiation</label></parameter><parameter name="CO" required="false" type="boolean"><label>CO</label></parameter><parameter name="NO2" required="false" type="boolean"><label>NO2</label></parameter><parameter name="O3" required="false" type="boolean"><label>O3</label></parameter><parameter name="SO2" required="false" type="boolean"><label>SO2</label></parameter></config-description>
+        </config-description>
 
 
 	</thing-type>
@@ -107,6 +107,43 @@
     <thing-type id="contribute">
         <label>Contribute Data to OpenSense</label>
         <description>Contribute weather and environmental data to OpenSense</description>
+        
+        <channel-groups>
+            <channel-group id="information" typeId="information">
+                <label>Current Information</label>
+                <description>This is the current temperature</description>
+            </channel-group>
+        </channel-groups>
+        
+        <config-description>
+        
+            <parameter name="username" required="true" type="text">
+                <label>Username</label>
+                <description>Your OpenSense Username</description>
+            </parameter>
+            <parameter name="password" required="true" type="text">
+                <context>password</context>
+                <label>Password</label>
+                <description>Your OpenSense Password</description>
+            </parameter>
+            <parameter name="sensor_id" required="true" type="text">
+                <label>Sensor ID</label>
+                <description>Your Sensor ID which you created at https://opensense.network</description>
+            </parameter>
+            <parameter name="polling_interval" required="true" type="text">
+                <label>Polling Interval</label>
+                <description>Specify the polling interval for your sensor. New readings will accumulate and get pushed to OpenSense every 10 minutes.</description>
+                <options>
+                    <option value="1">Every 1 Minute</option>
+                    <option value="2">Every 2 Minutes</option>
+                    <option value="5">Every 5 Minutes</option>
+                    <option value="10">Every 10 Minutes</option>
+                    <option value="30">Every 30 Minutes</option>
+                </options>
+                <default>5</default>
+            </parameter>
+     
+        </config-description>
     </thing-type>
 
 

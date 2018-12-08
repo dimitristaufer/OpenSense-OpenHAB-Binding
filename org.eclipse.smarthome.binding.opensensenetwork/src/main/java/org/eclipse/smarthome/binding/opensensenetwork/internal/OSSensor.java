@@ -65,13 +65,16 @@ public class OSSensor {
 
     public static OSSensor getClosest(String lt, String lg, String measurand) {
 
+        System.out.println("Min Acc: " + OSProperties.minAccuracy().toString());
+
         String refPoint = String.format("(%s, %s)", lt, lg);
 
         HttpResponse<JsonNode> response;
         try {
             response = Unirest.get(OS_SENSOR_URL).queryString("measurandId", OSProperties.measurandId(measurand))
-                    .queryString("refPoint", refPoint).queryString("maxDistance", "100000")
-                    .queryString("maxSensors", "1").asJson();
+                    .queryString("refPoint", refPoint).queryString("maxDistance", OSProperties.maxDistance().toString())
+                    .queryString("maxSensors", "1").queryString("minAccuracy", OSProperties.minAccuracy().toString())
+                    .asJson();
 
             JSONObject json = response.getBody().getArray().getJSONObject(0);
 

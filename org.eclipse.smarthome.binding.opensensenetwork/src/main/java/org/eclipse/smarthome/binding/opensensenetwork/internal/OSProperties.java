@@ -32,9 +32,21 @@ public class OSProperties {
 
     public static void removeAllValues() {
 
-        // Preserve lat and long
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        try {
+            prefs.clear();
+        } catch (BackingStoreException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void removeAllSensors() {
+
+        // Preserve user values
         String lt = lt();
         String lg = lg();
+        int maxDistance = maxDistance();
+        int minAccuracy = minAccuracy();
 
         prefs = Preferences.userRoot().node(BINDING_ID);
         try {
@@ -42,6 +54,8 @@ public class OSProperties {
 
             prefs.put("lt", lt);
             prefs.put("lg", lg);
+            prefs.putInt("maxDistance", maxDistance);
+            prefs.putInt("minAccuracy", minAccuracy);
 
         } catch (BackingStoreException e) {
             e.printStackTrace();
@@ -102,6 +116,18 @@ public class OSProperties {
 
     }
 
+    public static Integer maxDistance() {
+
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        return prefs.getInt("maxDistance", 30000);
+    }
+
+    public static Integer minAccuracy() {
+
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        return prefs.getInt("minAccuracy", 1);
+    }
+
     public static Integer measurandId(String measurand) {
 
         prefs = Preferences.userRoot().node(BINDING_ID);
@@ -135,28 +161,32 @@ public class OSProperties {
 
     public static void storeMeasurandID(String measurand, String ID) {
 
-        prefs = Preferences.userRoot().node(BINDING_ID);
-        String key = String.format("%s_%s", "measurandId", measurand); // ex. "measurandId_temperature"
-        prefs.put(key, ID);
+        if (!SERVER_ONLY_MODE) {
+            prefs = Preferences.userRoot().node(BINDING_ID);
+            String key = String.format("%s_%s", "measurandId", measurand); // ex. "measurandId_temperature"
+            prefs.put(key, ID);
+        }
 
     }
 
     public static void storeSensorID(String measurand, String sensorID) {
 
-        prefs = Preferences.userRoot().node(BINDING_ID);
-        String key = String.format("%s_%s", "sensorId", measurand); // ex. "sensorId_temperature"
-        prefs.put(key, sensorID);
+        if (!SERVER_ONLY_MODE) {
+            prefs = Preferences.userRoot().node(BINDING_ID);
+            String key = String.format("%s_%s", "sensorId", measurand); // ex. "sensorId_temperature"
+            prefs.put(key, sensorID);
+        }
 
     }
 
     public static void storeSensor(OSSensor sensor, String sensorID) {
 
-        System.out.println("storing sensor");
-        prefs = Preferences.userRoot().node(BINDING_ID);
-        String key = String.format("%s_%s", "sensor", sensorID); // ex. "sensor_temperature"
-        System.out.println("Key: " + key);
-        System.out.println("Value: " + sensor.toString());
-        prefs.put(key, sensor.toString());
+        if (!SERVER_ONLY_MODE) {
+            System.out.println("storing sensor");
+            prefs = Preferences.userRoot().node(BINDING_ID);
+            String key = String.format("%s_%s", "sensor", sensorID); // ex. "sensor_temperature"
+            prefs.put(key, sensor.toString());
+        }
 
     }
 
@@ -171,6 +201,22 @@ public class OSProperties {
 
         prefs = Preferences.userRoot().node(BINDING_ID);
         prefs.put("lg", lg);
+
+    }
+
+    public static void storeMaxDistance(String distance) {
+
+        int d = Integer.parseInt(distance);
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        prefs.putInt("maxDistance", d);
+
+    }
+
+    public static void storeMinAccuracy(String accuracy) {
+
+        int a = Integer.parseInt(accuracy);
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        prefs.putInt("minAccuracy", a);
 
     }
 
