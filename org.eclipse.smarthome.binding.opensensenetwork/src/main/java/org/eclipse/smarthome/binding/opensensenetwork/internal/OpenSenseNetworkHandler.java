@@ -17,8 +17,9 @@ import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseN
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.core.Configuration;
+import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.OnOffType;
-import org.eclipse.smarthome.core.library.types.QuantityType;
+import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
@@ -50,6 +51,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
  * @author ISE - Initial contribution
  */
 @NonNullByDefault
+@SuppressWarnings("deprecation")
 public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     // private final Logger logger = LoggerFactory.getLogger(OpenSenseNetworkHandler.class);
@@ -65,20 +67,84 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
 
-        String measurand = channelUID.getGroupId(); // ex. "temperature"
         String thingType = channelUID.getThingUID().getThingTypeUID().getId(); // ex. "receive"
+        String groupId = String.format(channelUID.getGroupId()); // ex. "temperature"
+        String[] channelUIDstring = channelUID.toString().split("#");
+        // ex. "opensensenetwork:receive:0e4604b1:temperature#value"
+        String baseId = channelUIDstring[0];
+        // ex. "opensensenetwork:receive:0e4604b1:temperature"
+        String channelId = channelUIDstring[1];
+        // ex. "value"
+
+        System.out.println("Command Type: " + command.toString());
 
         if (command instanceof RefreshType) {
             if (thingType.equals("receive")) {
-                updateState(channelUID, OnOffType.OFF);
-                OSSensor sensor = OSSensor.getSensorForMeasurand(measurand);
-                // System.out.println("Updating Channel: '" + measurand + "' using Sensor:");
-                // System.out.println(sensor.toString());
-                updateState(channelUID, getCurrentValue(sensor));
+
+                /*
+                 * && channelId.equals("value")
+                 *
+                 * This only get's called when the channelId equals 'value' to prevent server queries for every
+                 * channelId (sensorModel, location, directionVertical, etc..)
+                 *
+                 * Instead we call it once and manually update all the channel states using the OSValue object
+                 */
+
+                offAllChannels(channelUID.getId().split("#")[0]);
+
+                OSSensor sensor = OSSensor.getSensorForMeasurand(groupId);
+                // System.out.println("Updating Channel: '" + groupId + "' using Sensor:" + sensor.toString());
+                updateChannels(getCurrentValue(sensor), channelUID.getId().split("#")[0]);
+
             } else if (thingType.equals("contribute")) {
                 /* do nothing yet */
+            } else {
+                /* doesn't exist */
             }
         }
+    }
+
+    private void offAllChannels(String baseId) {
+
+        updateState(baseId + "#id", OnOffType.OFF);
+        updateState(baseId + "#userId", OnOffType.OFF);
+        updateState(baseId + "#measurandId", OnOffType.OFF);
+        updateState(baseId + "#unitId", OnOffType.OFF);
+        updateState(baseId + "#location", OnOffType.OFF);
+        updateState(baseId + "#altitudeAboveGround", OnOffType.OFF);
+        updateState(baseId + "#directionVertical", OnOffType.OFF);
+        updateState(baseId + "#directionHorizontal", OnOffType.OFF);
+        updateState(baseId + "#sensorModel", OnOffType.OFF);
+        updateState(baseId + "#accuracy", OnOffType.OFF);
+        updateState(baseId + "#attributionText", OnOffType.OFF);
+        updateState(baseId + "#attributionURL", OnOffType.OFF);
+        updateState(baseId + "#licenseId", OnOffType.OFF);
+        updateState(baseId + "#observationTime", OnOffType.OFF);
+        updateState(baseId + "#value", OnOffType.OFF);
+
+    }
+
+    private void updateChannels(OSValue osVal, String baseId) {
+
+        updateState(baseId + "#id", DecimalType.valueOf(String.format("%d", osVal.id())));
+        updateState(baseId + "#userId", DecimalType.valueOf(String.format("%d", osVal.userId())));
+        updateState(baseId + "#measurandId", DecimalType.valueOf(String.format("%d", osVal.measurandId())));
+        updateState(baseId + "#unitId", DecimalType.valueOf(String.format("%d", osVal.unitId())));
+        updateState(baseId + "#location", StringType.valueOf(osVal.location()));
+        updateState(baseId + "#altitudeAboveGround",
+                DecimalType.valueOf(String.format("%f", osVal.altitudeAboveGround())));
+        updateState(baseId + "#directionVertical", DecimalType.valueOf(String.format("%f", osVal.directionVertical())));
+        updateState(baseId + "#directionHorizontal",
+                DecimalType.valueOf(String.format("%f", osVal.directionHorizontal())));
+        updateState(baseId + "#sensorModel", StringType.valueOf(osVal.sensorModel()));
+        updateState(baseId + "#accuracy", DecimalType.valueOf(String.format("%d", osVal.accuracy())));
+        updateState(baseId + "#attributionText", StringType.valueOf(osVal.attributionText()));
+        updateState(baseId + "#attributionURL", StringType.valueOf(osVal.attributionURL()));
+        updateState(baseId + "#licenseId", DecimalType.valueOf(String.format("%d", osVal.licenseId())));
+        updateState(baseId + "#observationTime", StringType.valueOf(osVal.observationTime()));
+
+        updateState(baseId + "#value", OSQuantityType.getQuantityType(osVal.measurandId(), osVal.numberValue()));
+
     }
 
     /**
@@ -86,8 +152,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
      *
      * @param OSSensor
      */
-    @SuppressWarnings("rawtypes")
-    public QuantityType getCurrentValue(OSSensor sensor) {
+    public OSValue getCurrentValue(OSSensor sensor) {
 
         // System.out.println("Getting current val for sensorid:" + sensor.id());
 
@@ -96,14 +161,13 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
             response = Unirest.get(OS_LATEST_URL.replace("SENSORID", sensor.id())).asJson();
 
             JSONObject json = response.getBody().getArray().getJSONObject(0);
-            JSONObject values = json.getJSONArray("values").getJSONObject(0);
-            OSValue osValue = new OSValue(values.getString("timestamp"), values.getDouble("numberValue"));
-            return OSQuantityType.getQuantityType(sensor.measurandId(), osValue.numberValue());
+            OSValue osVal = OSValue.makeValue(json);
+            return osVal;
 
         } catch (UnirestException error) {
             error.printStackTrace();
-            OSValue osValue = new OSValue("", 0.0);
-            return OSQuantityType.getQuantityType(sensor.measurandId(), osValue.numberValue());
+            OSValue osValue = new OSValue();
+            return osValue;
 
         }
 
@@ -112,17 +176,14 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
     @Override
     public void initialize() {
 
+        if (DEBUG) {
+            // DEBUG: Clear local cache -> Force server values
+            OSProperties.removeAllValues();
+        }
+
         updateStatus(ThingStatus.UNKNOWN);
 
-        System.out.println("Thing Type: " + thing.getThingTypeUID());
-
         if (thing.getThingTypeUID().equals(THING_TYPE_RECEIVE)) {
-
-            try {
-                OpenSenseNetworkConfiguration.performConfiguration();
-            } catch (UnirestException e) {
-                e.printStackTrace();
-            }
 
             Configuration config = getThing().getConfiguration();
             if (config.get("latitude") != null && config.get("longitude") != null) {
@@ -152,27 +213,4 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
     }
 
-    /* For future reference -> How to run something on another thread */
-
-    // Thread humi_T = new Thread() {
-    // @Override
-    // public void run() {
-    // }
-    // };
-    //
-    // humi_T.start();
-
-    /*
-     * DynamicStateDescriptionProvider dyn = new DynamicStateDescriptionProvider() {
-     *
-     * @Override
-     * public @Nullable StateDescription getStateDescription(Channel channel,
-     *
-     * @Nullable StateDescription originalStateDescription, @Nullable Locale locale) {
-     * // TODO Auto-generated method stub
-     *
-     * return null;
-     * }
-     * };
-     */
 }

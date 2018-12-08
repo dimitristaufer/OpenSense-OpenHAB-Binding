@@ -16,6 +16,7 @@ import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 
 public class OSQuantityType {
 
+    @SuppressWarnings("rawtypes")
     public static QuantityType getQuantityType(int measurandId, double value) {
 
         System.out.println("TYPE IS: " + measurandId);
@@ -65,5 +66,28 @@ public class OSQuantityType {
         }
 
     }
+
+    /*
+     * ArithmeticGroupFunction.java
+     * DateTimeGroupFunction.java
+     * DateTimeType.java
+     * DecimalType.java
+     * HSBType.java
+     * IncreaseDecreaseType.java
+     * NextPreviousType.java
+     * OnOffType.java
+     * OpenClosedType.java
+     * PercentType.java
+     * PlayPauseType.java
+     * PointType.java
+     * QuantityType.java
+     * QuantityTypeArithmeticGroupFunction.java
+     * RawType.java
+     * RewindFastforwardType.java
+     * StopMoveType.java
+     * StringListType.java
+     * StringType.java
+     * UpDownType.java
+     */
 
 }

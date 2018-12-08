@@ -68,8 +68,8 @@ public class OSProperties {
         String key = String.format("%s_%s", "sensor", sensorId); // ex. "sensor_temperature"
         String value = prefs.get(key, "0");
 
-        System.out.println("Used Key:" + key);
-        System.out.println("Loaded Value:" + value);
+        // System.out.println("Used Key:" + key);
+        // System.out.println("Loaded Value:" + value);
         return OSSensor.fromString(value);
 
     }

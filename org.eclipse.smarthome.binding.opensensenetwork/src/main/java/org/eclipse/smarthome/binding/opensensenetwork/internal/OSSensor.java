@@ -1,6 +1,6 @@
 package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
-import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.*;
+import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.OS_SENSOR_URL;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,11 +52,6 @@ public class OSSensor {
 
     public synchronized static OSSensor getSensorForMeasurand(String measurand) {
 
-        if (DEBUG) {
-            // DEBUG: Clear local cache
-            OSProperties.removeAllValues();
-        }
-
         String sID = OSProperties.sensorId(measurand);
         if (sID.equals("0")) {
             System.out.println("Searching nearest sensor for " + measurand + ", because no local sensorId was found");
@@ -75,7 +70,7 @@ public class OSSensor {
         HttpResponse<JsonNode> response;
         try {
             response = Unirest.get(OS_SENSOR_URL).queryString("measurandId", OSProperties.measurandId(measurand))
-                    .queryString("refPoint", refPoint).queryString("maxDistance", "20000")
+                    .queryString("refPoint", refPoint).queryString("maxDistance", "100000")
                     .queryString("maxSensors", "1").asJson();
 
             JSONObject json = response.getBody().getArray().getJSONObject(0);
@@ -126,7 +121,7 @@ public class OSSensor {
         int id = json.optInt("id", -1);
         int userId = json.optInt("userId", -1);
         int measurandId = json.optInt("measurandId", -1);
-        int unitID = json.optInt("unitId", -1);
+        int unitId = json.optInt("unitId", -1);
         double lt = location.optDouble("lat", 49.1259);
         double lg = location.optDouble("lng", 9.1428);
         double altitudeAboveGround = json.optDouble("altitudeAboveGround", -1.0);
@@ -138,7 +133,7 @@ public class OSSensor {
         String attributionURL = json.optString("attributionURL", "");
         int licenseId = json.optInt("licenseId", -1);
 
-        OSSensor sens = new OSSensor(id, userId, measurandId, unitID, lt, lg, altitudeAboveGround, directionVertical,
+        OSSensor sens = new OSSensor(id, userId, measurandId, unitId, lt, lg, altitudeAboveGround, directionVertical,
                 directionHorizontal, sensorModel, accuracy, attributionText, attributionURL, licenseId);
 
         OSProperties.storeSensor(sens, sensorId);
