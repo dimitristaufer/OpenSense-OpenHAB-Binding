@@ -241,6 +241,10 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
         }
 
+        else if (thing.getThingTypeUID().equals(THING_TYPE_CONTRIBUTE)) {
+
+        }
+
     }
 
     @Override

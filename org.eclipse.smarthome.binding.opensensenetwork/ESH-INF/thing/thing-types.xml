@@ -108,12 +108,14 @@
         <label>Contribute Data to OpenSense</label>
         <description>Contribute weather and environmental data to OpenSense</description>
         
+        <!--
         <channel-groups>
             <channel-group id="information" typeId="information">
                 <label>Current Information</label>
                 <description>This is the current temperature</description>
             </channel-group>
         </channel-groups>
+        -->
         
         <config-description>
         
