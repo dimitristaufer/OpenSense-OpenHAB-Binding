@@ -119,19 +119,19 @@ public class OSProperties {
     public static String OpenHABLink(String measurand) {
         prefs = Preferences.userRoot().node(BINDING_ID);
         String key = String.format("ContributeLink_%s", measurand);
-        String link = prefs.get(key, ""); // what is default value?
+        String link = prefs.get(key, "0");
         return link;
     }
 
     public static String Username() {
         prefs = Preferences.userRoot().node(BINDING_ID);
-        String username = prefs.get("username", ""); // what is default value?
+        String username = prefs.get("username", "0");
         return username;
     }
 
     public static String Password() {
         prefs = Preferences.userRoot().node(BINDING_ID);
-        String password = prefs.get("password", ""); // default?
+        String password = prefs.get("password", "0");
         return password;
     }
 
