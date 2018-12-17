@@ -239,6 +239,32 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
             // }
             // }, 0, 12, TimeUnit.SECONDS);
 
+        } else if (thing.getThingTypeUID().equals(THING_TYPE_CONTRIBUTE)) {
+
+            Configuration config = getThing().getConfiguration();
+            if (config.get("username") != null) {
+                String username = config.get("username").toString();
+                OSProperties.storeUsername(username);
+            }
+            if (config.get("password") != null) {
+                String password = config.get("password").toString();
+                OSProperties.storePassword(password);
+            }
+            if (config.get("sensor_id") != null && config.get("polling_interval") != null) {
+                String sensor_id = config.get("sensor_id").toString();
+                String measurand = OSSensor.getMeasurandNameFromSensor(sensor_id);
+                OSProperties.storeContributeSensorID(sensor_id, measurand);
+                String polling_interval = config.get("polling_interval").toString();
+                OSProperties.storeContributePollingInterval(polling_interval, measurand);
+
+                String measurandFromSensor = OSSensor.getMeasurandNameFromSensor(config.get("sensor_id").toString());
+                if (OSContribute.getMeasurandsToContribute(OHItem.getMeasurandsFromOpenHab(),
+                        OSContribute.getMeasurandsFromOpenSense()).contains(measurandFromSensor)) {
+                    OSProperties.storeOpenHABLink(OHItem.getLinkForMeasurand(measurand), measurand);
+                    System.out.println(OHItem.getLinkForMeasurand(measurand)); // TO CHECK IF CORRECT
+                }
+            }
+
         }
 
     }
