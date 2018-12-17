@@ -100,4 +100,20 @@ public class OHValue {
                 this.label, this.category, this.tags.toString(), this.groupNames.toString(), this.timestamp.toString());
     }
 
+    public JSONObject getAsJson() {
+        JSONObject json = new JSONObject();
+        json.append("link", link);
+        json.append("state", state);
+        json.append("stateDescription", stateDescription);
+        json.append("editable", editable);
+        json.append("type", type);
+        json.append("name", name);
+        json.append("label", label);
+        json.append("category", category);
+        json.append("tags", tags);
+        json.append("groupNames", groupNames);
+        json.append("timeStamp", timestamp);
+        return json;
+    }
+
 }

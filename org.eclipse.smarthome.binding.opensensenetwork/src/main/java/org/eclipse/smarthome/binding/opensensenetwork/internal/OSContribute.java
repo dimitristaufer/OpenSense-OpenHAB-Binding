@@ -49,6 +49,7 @@ public class OSContribute {
     }
 
     public static void storeLocalReading(OHItem item) {
+        
 
         // TODO: 1) Take item.state and generate (correctly for Open Sense formatted) timestamp
 
