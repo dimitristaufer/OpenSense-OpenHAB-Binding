@@ -102,8 +102,7 @@ public class OHItem {
             if (response.getStatus() == 200) {
                 JsonNode body = new JsonNode(response.getBody());
                 JSONObject json = body.getObject();
-                System.out.println("JSON OBJECT: " + json);
-
+                return getOHItemFromJson(json);
             }
             return null;
         } catch (UnirestException | JSONException je) {
@@ -127,6 +126,14 @@ public class OHItem {
 
         link = json.getString("link");
         state = json.getString("state");
+        state = state.replaceAll("[^\\d.]", "");
+        System.out.println("state: " + state);
+        if (state == "" || state == null || state.isEmpty() || state.replaceAll("[^.]", "").length() > 1) {
+            state = "0.0";
+        } else {
+            float value = Float.parseFloat(state);
+            state = String.format("%.2f", value);
+        }
         stateDescription = json.has("stateDescription") ? (JSONObject) json.get("stateDescription") : null;
         editable = json.getBoolean("editable");
         type = json.getString("type");
