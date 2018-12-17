@@ -259,13 +259,24 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                 OSProperties.storeContributePollingInterval(polling_interval, measurand);
 
                 String measurandFromSensor = OSSensor.getMeasurandNameFromSensor(config.get("sensor_id").toString());
-                if (OSContribute.getMeasurandsToContribute(OHItem.getMeasurandsFromOpenHab(),
-                        OSContribute.getMeasurandsFromOpenSense()).contains(measurandFromSensor)) {
-                    OSProperties.storeOpenHABLink(OHItem.getLinkForMeasurand(measurand), measurand);
-                }
-            }
+                if (measurandFromSensor == "") { // error getting name
+                    updateStatus(ThingStatus.OFFLINE);
+                } else {
 
-            updateStatus(ThingStatus.ONLINE);
+                    boolean localMeasurandExists = OSContribute
+                            .getMeasurandsToContribute(OHItem.getMeasurandsFromOpenHab(),
+                                    OSContribute.getMeasurandsFromOpenSense())
+                            .contains(measurandFromSensor);
+
+                    if (localMeasurandExists) {
+                        OSProperties.storeOpenHABLink(OHItem.getLinkForMeasurand(measurand), measurand);
+                        updateStatus(ThingStatus.ONLINE);
+                    } else {
+                        updateStatus(ThingStatus.OFFLINE);
+                    }
+                }
+
+            }
 
         }
 
