@@ -136,7 +136,7 @@ public class OpenSenseNetworkConfiguration {
      * @param filepath
      * @return
      */
-    private synchronized boolean didWriteJSONtoFile(JsonNode jObj, String filepath) {
+    private synchronized boolean writeJSONtoFile(JsonNode jObj, String filepath) {
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
