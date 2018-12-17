@@ -250,21 +250,24 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                     boolean localMeasurandExists = OSContribute
                             .getMeasurandsToContribute(OHItem.getMeasurandsFromOpenHab(),
                                     OSContribute.getMeasurandsFromOpenSense())
-                            .contains(measurandFromSensor);
+                            .contains(measurandFromSensor.toLowerCase());
 
                     if (localMeasurandExists) {
-                        OSProperties.storeOpenHABLink(OHItem.getLinkForMeasurand(measurand), measurand);
                         updateStatus(ThingStatus.ONLINE);
+                        String localSensorLink = OHItem.getLinkForMeasurand(measurand);
+                        OSProperties.storeOpenHABLink(localSensorLink, measurand);
 
                         int delay = Integer.parseInt(polling_interval) * 60;
-                        scheduler.shutdown();
                         scheduler.scheduleWithFixedDelay(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    System.out.println("Scheduled Update");
-                                    String localSensorLink = OSProperties.openHABLink(measurand);
-                                    OHItem.getOHItemFromLink(localSensorLink);
+                                    System.out.println("Update Call to Store Local Reading");
+
+                                    OHItem item = OHItem.getOHItemFromLink(localSensorLink);
+                                    if (item != null) {
+                                        OSContribute.storeLocalReading(item);
+                                    }
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
