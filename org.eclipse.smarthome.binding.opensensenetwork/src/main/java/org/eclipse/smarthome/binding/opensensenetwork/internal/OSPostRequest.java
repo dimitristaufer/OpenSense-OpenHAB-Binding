@@ -21,8 +21,7 @@ public class OSPostRequest {
     private int userId;
 
     public static void main(String[] args) throws IOException {
-        PostRequest(40549);
-
+        PostValueToOSSensor(40549, 10);
     }
 
     public OSPostRequest(int measurandId, int licenseId, int userId) {
@@ -54,7 +53,7 @@ public class OSPostRequest {
 
     }
 
-    public static String PostRequest(long id) {
+    public static String PostValueToOSSensor(long id, double temperature) {
 
         try {
             JSONObject json = new JSONObject();
@@ -63,7 +62,7 @@ public class OSPostRequest {
             Timestamp timestamp = new Timestamp(date.getTime());
             json.put("sensorId", id);
             json.put("timestamp", timestamp);
-            json.put("numberValue", 10);
+            json.put("numberValue", temperature);
             jArr.put(json);
             HttpResponse<String> request = Unirest
                     .post("https://www.opensense.network/progprak/beta/api/v1.0/sensors/addValue")

@@ -246,7 +246,13 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                 if (measurandFromSensor == "") { // error getting name
                     updateStatus(ThingStatus.OFFLINE);
                 } else {
-
+                    System.out.println("+++++++++++++++++");
+                    System.out.println("+++++++++++++++++");
+                    System.out.println("Netatmo:" + OSContribute.getMeasurandsToContribute(
+                            OHItem.getMeasurandsFromOpenHab(), OSContribute.getMeasurandsFromOpenSense()));
+                    System.out.println("Sensor: " + measurandFromSensor);
+                    System.out.println("+++++++++++++++++");
+                    System.out.println("+++++++++++++++++");
                     boolean localMeasurandExists = OSContribute
                             .getMeasurandsToContribute(OHItem.getMeasurandsFromOpenHab(),
                                     OSContribute.getMeasurandsFromOpenSense())
@@ -278,6 +284,16 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                 }
 
             }
+
+            System.out.println("---------------------------");
+            System.out.println("---------------------------");
+            System.out.println("---------------------------");
+            String measurand = OSSensor.getMeasurandNameFromSensor(config.get("sensor_id").toString());
+            System.out.println(measurand);
+            System.out.println(OHItem.getLinkForMeasurand(measurand));
+            System.out.println("---------------------------");
+            System.out.println("---------------------------");
+            System.out.println("---------------------------");
 
         }
 
