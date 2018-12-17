@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><thing:thing-descriptions xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bindingId="opensensenetwork" xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
-	<thing-type id="receive">
-		<label>Receive Data from OpenSense</label>
-		<description>Receive weather and environmental data from OpenSense</description>
+    <thing-type id="receive">
+        <label>Receive Data from OpenSense</label>
+        <description>Receive weather and environmental data from OpenSense</description>
 
-		 <channel-groups>
+         <channel-groups>
             <channel-group id="temperature" typeId="temperature">
                 <label>Current Temperature</label>
                 <description>This is the current temperature</description>
@@ -56,8 +56,8 @@
          </channel-groups>
    
 
-		<config-description>
-		
+        <config-description>
+        
             <parameter name="latitude" required="false" type="decimal">
                 <label>Latitude</label>
                 <description>Leave blank for auto location (TODO)</description>
@@ -69,16 +69,16 @@
                 <default>9.4910</default>
             </parameter>
             <parameter name="distance" required="true" type="text">
-	            <label>Maximum Sensor Distance</label>
-	            <description>Specify the maximum sensor distance from your specified location.</description>
-	            <options>
-	                <option value="10000">10 km</option>
-	                <option value="25000">25 km</option>
-	                <option value="50000">50km</option>
-	                <option value="100000">100km</option>
-	                <option value="200000">200km</option>
-	            </options>
-	            <default>25000</default>
+                <label>Maximum Sensor Distance</label>
+                <description>Specify the maximum sensor distance from your specified location.</description>
+                <options>
+                    <option value="10000">10 km</option>
+                    <option value="25000">25 km</option>
+                    <option value="50000">50km</option>
+                    <option value="100000">100km</option>
+                    <option value="200000">200km</option>
+                </options>
+                <default>25000</default>
             </parameter>
             <parameter name="accuracy" required="true" type="text">
                 <label>Minimum Sensor Accuracy</label>
@@ -101,8 +101,8 @@
         </config-description>
 
 
-	</thing-type>
-	
+    </thing-type>
+    
     
     <thing-type id="contribute">
         <label>Contribute Data to OpenSense</label>

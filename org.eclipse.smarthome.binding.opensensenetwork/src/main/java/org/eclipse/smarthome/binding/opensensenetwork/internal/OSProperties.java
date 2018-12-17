@@ -220,4 +220,42 @@ public class OSProperties {
 
     }
 
+    public static void storeUsername(String username) {
+        if (!SERVER_ONLY_MODE) {
+            prefs = Preferences.userRoot().node(BINDING_ID);
+            prefs.put("username", username);
+        }
+    }
+
+    public static void storePassword(String password) {
+        if (!SERVER_ONLY_MODE) {
+            prefs = Preferences.userRoot().node(BINDING_ID);
+            prefs.put("password", password);
+        }
+    }
+
+    public static void storeContributeSensorID(String id, String measurand) {
+        if (!SERVER_ONLY_MODE) {
+            prefs = Preferences.userRoot().node(BINDING_ID);
+            String key = String.format("%s_%s_contribute", "sensorId", measurand); // ex. "sensorId_temperature"
+            prefs.put(key, id);
+        }
+    }
+
+    public static void storeContributePollingInterval(String interval, String measurand) {
+        if (!SERVER_ONLY_MODE) {
+            prefs = Preferences.userRoot().node(BINDING_ID);
+            String key = String.format("ContributePollingInterval_%s", measurand);
+            prefs.put(key, interval);
+        }
+    }
+
+    public static void storeOpenHABLink(String link, String measurand) {
+        if (!SERVER_ONLY_MODE) {
+            prefs = Preferences.userRoot().node(BINDING_ID);
+            String key = String.format("ContributeLink_%s", measurand);
+            prefs.put(key, link);
+        }
+    }
+
 }
