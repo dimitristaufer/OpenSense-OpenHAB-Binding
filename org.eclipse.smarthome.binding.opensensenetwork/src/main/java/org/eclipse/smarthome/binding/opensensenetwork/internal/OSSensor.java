@@ -240,4 +240,57 @@ public class OSSensor {
 
     }
 
+    public static String getMeasurandNameFromSensor(String sensorID) {
+        OSSensor sensor = getOSSensorById(sensorID);
+        int measurandID = -1;
+        String measurandName = "";
+        if (sensor != null) {
+            measurandID = sensor.measurandId();
+        }
+        if (measurandID != -1) {
+            HttpResponse<String> response;
+            String link = String.format("%s/%s", OpenSenseNetworkBindingConstants.OS_MEASURANDS_URL, measurandID);
+            try {
+                response = Unirest.get(link).asString();
+                JSONObject json = new JSONObject(response.getBody());
+                measurandName = json.get("name").toString();
+
+            } catch (UnirestException error) {
+                error.printStackTrace();
+            }
+        }
+        return measurandName;
+    }
+
+    public static OSSensor getOSSensorById(String sensorId) {
+        HttpResponse<String> response;
+        try {
+            String link = String.format("%s/%s", OS_SENSOR_URL, sensorId);
+            response = Unirest.get(link).asString();
+            JSONObject json = new JSONObject(response.getBody());
+            int id = json.getInt("id");
+            int userId = json.getInt("userId");
+            int measurandId = json.getInt("measurandId");
+            int unitId = json.getInt("unitId");
+            JSONObject location = (JSONObject) json.get("location");
+            double lt = location.getDouble("lat");
+            double lg = location.getDouble("lng");
+            double altitudeAboveGround = json.getDouble("altitudeAboveGround");
+            double directionVertical = json.getDouble("directionVertical");
+            double directionHorizontal = json.getDouble("directionHorizontal");
+            String sensorModel = json.getString("sensorModel");
+            int accuracy = json.getInt("accuracy");
+            String attributionText = json.getString("attributionText");
+            String attributionURL = json.getString("attributionURL");
+            int licenseId = json.getInt("licenseId");
+            return new OSSensor(id, userId, measurandId, unitId, lt, lg, altitudeAboveGround, directionVertical,
+                    directionHorizontal, sensorModel, accuracy, attributionText, attributionURL, licenseId);
+
+        } catch (UnirestException error) {
+            error.printStackTrace();
+            return null;
+        }
+
+    }
+
 }

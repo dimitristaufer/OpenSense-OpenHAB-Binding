@@ -116,6 +116,39 @@ public class OSProperties {
 
     }
 
+    public static String OpenHABLink(String measurand) {
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String key = String.format("ContributeLink_%s", measurand);
+        String link = prefs.get(key, ""); // what is default value?
+        return link;
+    }
+
+    public static String Username() {
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String username = prefs.get("username", ""); // what is default value?
+        return username;
+    }
+
+    public static String Password() {
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String password = prefs.get("password", ""); // default?
+        return password;
+    }
+
+    public static long ContributeSensorID(String measurand) {
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String key = String.format("%s_%s_contribute", "sensorId", measurand);
+        long id = prefs.getLong(key, -1);
+        return id;
+    }
+
+    public static int ContributePollingInterval(String measurand) {
+        prefs = Preferences.userRoot().node(BINDING_ID);
+        String key = String.format("ContributePollingInterval_%s", measurand);
+        int interval = prefs.getInt(key, 10);
+        return interval;
+    }
+
     public static Integer maxDistance() {
 
         prefs = Preferences.userRoot().node(BINDING_ID);
