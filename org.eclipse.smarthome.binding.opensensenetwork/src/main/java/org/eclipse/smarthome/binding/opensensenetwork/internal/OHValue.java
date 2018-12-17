@@ -116,4 +116,12 @@ public class OHValue {
         return json;
     }
 
+    public JSONObject getAsReadyToStore(String osSensorId) {
+        JSONObject json = new JSONObject();
+        json.append("sensorId", Integer.parseInt(osSensorId));
+        json.append("timestamp", timestamp);
+        json.append("numberValue", Double.parseDouble(state));
+        return json;
+    }
+
 }

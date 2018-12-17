@@ -272,7 +272,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
                                     OHItem item = OHItem.getOHItemFromLink(localSensorLink);
                                     if (item != null) {
-                                        OSContribute.storeLocalReading(item);
+                                        OSContribute.storeLocalReading(item, config.get("sensor_id").toString());
                                     }
 
                                 } catch (Exception e) {

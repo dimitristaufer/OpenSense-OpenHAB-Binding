@@ -48,9 +48,24 @@ public class OSContribute {
         return measurands;
     }
 
-    public static void storeLocalReading(OHItem item) {
-        
+    public static void storeLocalReading(OHItem item, String sensorId) {
+        try {
+            HttpResponse<String> response = Unirest.get(item.getLink()).header("Accept", "application/json")
+                    .header("Authorization", "Basic bWF0ZW85NkBvMi5wbDpTbWFydEhvbWU=").asString();
 
+            JSONObject responseJson = new JSONObject(response.getBody());
+            OHValue ohValue = new OHValue(responseJson);
+            JSONObject json = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(ohValue.getAsReadyToStore(sensorId));
+            json.append("collapsedMessages", jsonArray);
+            File file = new File(
+                    OpenSenseNetworkHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+            String filePath = file.getAbsolutePath().concat("/ESH-INF/binding/").concat(item.getLink());
+            writeJSONtoFile(json, filePath);
+        } catch (Exception ex) {
+            // return ex.getMessage();
+        }
         // TODO: 1) Take item.state and generate (correctly for Open Sense formatted) timestamp
 
         // TODO: 2) Generate some sort of JSON entry
@@ -61,7 +76,7 @@ public class OSContribute {
 
     }
 
-    private void writeJSONtoFile(JsonNode jObj, String filepath) {
+    private static void writeJSONtoFile(JSONObject jObj, String filepath) {
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
