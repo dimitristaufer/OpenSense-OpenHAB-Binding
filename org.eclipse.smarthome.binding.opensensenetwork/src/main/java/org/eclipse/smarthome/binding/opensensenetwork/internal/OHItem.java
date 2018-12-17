@@ -92,6 +92,27 @@ public class OHItem {
         }
     }
 
+    public static OHItem getOHItemFromLink(String link) {
+
+        try {
+            HttpResponse<String> response = Unirest.get(link).header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Basic bWF0ZW85NkBvMi5wbDpTbWFydEhvbWU=").asString();
+            System.out.println(response.getStatusText());
+            if (response.getStatus() == 200) {
+                JsonNode body = new JsonNode(response.getBody());
+                JSONObject json = body.getObject();
+                System.out.println("JSON OBJECT: " + json);
+
+            }
+            return null;
+        } catch (UnirestException | JSONException je) {
+            System.out.println(je.getMessage());
+            return null;
+        }
+
+    }
+
     public static OHItem getOHItemFromJson(JSONObject json) {
         String link;
         String state;

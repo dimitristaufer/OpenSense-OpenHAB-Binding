@@ -14,6 +14,8 @@ package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
 import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.*;
 
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.library.types.DecimalType;
@@ -221,24 +223,6 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
 
             updateStatus(ThingStatus.ONLINE);
 
-            // scheduler.scheduleWithFixedDelay(new Runnable() {
-            // @Override
-            // public void run() {
-            // try {
-            // // update Values
-            // // initialize();
-            // System.out.println("Scheduled Update");
-            //
-            // for (Channel channel : getThing().getChannels()) {
-            // refreshChannel(channel.getUID());
-            // }
-            //
-            // } catch (Exception e) {
-            // e.printStackTrace();
-            // }
-            // }
-            // }, 0, 12, TimeUnit.SECONDS);
-
         } else if (thing.getThingTypeUID().equals(THING_TYPE_CONTRIBUTE)) {
             Configuration config = getThing().getConfiguration();
 
@@ -271,6 +255,23 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                     if (localMeasurandExists) {
                         OSProperties.storeOpenHABLink(OHItem.getLinkForMeasurand(measurand), measurand);
                         updateStatus(ThingStatus.ONLINE);
+
+                        int delay = Integer.parseInt(polling_interval) * 60;
+                        scheduler.shutdown();
+                        scheduler.scheduleWithFixedDelay(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    System.out.println("Scheduled Update");
+                                    String localSensorLink = OSProperties.openHABLink(measurand);
+                                    OHItem.getOHItemFromLink(localSensorLink);
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, 0, delay, TimeUnit.SECONDS);
+
                     } else {
                         updateStatus(ThingStatus.OFFLINE);
                     }

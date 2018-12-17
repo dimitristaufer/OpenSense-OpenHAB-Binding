@@ -116,33 +116,33 @@ public class OSProperties {
 
     }
 
-    public static String OpenHABLink(String measurand) {
+    public static String openHABLink(String measurand) {
         prefs = Preferences.userRoot().node(BINDING_ID);
         String key = String.format("ContributeLink_%s", measurand);
         String link = prefs.get(key, "0");
         return link;
     }
 
-    public static String Username() {
+    public static String username() {
         prefs = Preferences.userRoot().node(BINDING_ID);
         String username = prefs.get("username", "0");
         return username;
     }
 
-    public static String Password() {
+    public static String password() {
         prefs = Preferences.userRoot().node(BINDING_ID);
         String password = prefs.get("password", "0");
         return password;
     }
 
-    public static long ContributeSensorID(String measurand) {
+    public static long contributeSensorID(String measurand) {
         prefs = Preferences.userRoot().node(BINDING_ID);
         String key = String.format("%s_%s_contribute", "sensorId", measurand);
         long id = prefs.getLong(key, -1);
         return id;
     }
 
-    public static int ContributePollingInterval(String measurand) {
+    public static int contributePollingInterval(String measurand) {
         prefs = Preferences.userRoot().node(BINDING_ID);
         String key = String.format("ContributePollingInterval_%s", measurand);
         int interval = prefs.getInt(key, 10);

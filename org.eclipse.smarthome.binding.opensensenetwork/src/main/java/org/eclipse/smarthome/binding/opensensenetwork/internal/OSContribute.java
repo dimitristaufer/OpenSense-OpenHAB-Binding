@@ -40,4 +40,9 @@ public class OSContribute {
         }
         return measurands;
     }
+
+    public static void storeLocalReading() {
+
+    }
+
 }
