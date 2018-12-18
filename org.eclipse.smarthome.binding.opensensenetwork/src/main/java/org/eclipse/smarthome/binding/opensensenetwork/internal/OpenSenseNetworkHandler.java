@@ -14,6 +14,9 @@ package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
 import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseNetworkBindingConstants.*;
 
+import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -27,6 +30,7 @@ import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -55,12 +59,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 @SuppressWarnings("deprecation")
 public class OpenSenseNetworkHandler extends BaseThingHandler {
 
-    // private final Logger logger = LoggerFactory.getLogger(OpenSenseNetworkHandler.class);
-    // private final ArrayList<String> desired_channels = new ArrayList<>();
-
-    // @Nullable
-    // private OpenSenseNetworkConfiguration config;
-
     public OpenSenseNetworkHandler(Thing thing) {
         super(thing);
     }
@@ -81,6 +79,8 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
         String groupId = String.format(channelUID.getGroupId()); // ex. "temperature"
         String baseId = channelUID.getId().split("#")[0];
 
+        System.out.println("Refresh Channel Thing Type:" + thingType);
+
         if (thingType.equals("receive")) {
 
             /*
@@ -99,7 +99,30 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
             updateChannels(getCurrentValue(sensor), baseId);
 
         } else if (thingType.equals("contribute")) {
-            /* do nothing yet */
+
+            System.out.println("IS CONTRIBUTE!!!!");
+            try {
+                JSONObject lastReading = OSContribute.getLatestStoredLocalValue("40549");
+
+                Integer sensorId = lastReading.getInt("sensorId");
+                Float numberValue = lastReading.getFloat("numberValue");
+                String timestamp = lastReading.getString("timestamp");
+
+                /* Sensor ID */
+                updateState(baseId + "#sensor_id_status", StringType.valueOf(sensorId.toString()));
+                /* Last Update Time */
+                updateState(baseId + "#last_value_status", StringType.valueOf(numberValue.toString()));
+                /* Last Reading */
+                updateState(baseId + "#last_update_status", StringType.valueOf(timestamp));
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
         } else {
             /* doesn't exist */
         }
@@ -246,13 +269,6 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                 if (measurandFromSensor == "") { // error getting name
                     updateStatus(ThingStatus.OFFLINE);
                 } else {
-                    System.out.println("+++++++++++++++++");
-                    System.out.println("+++++++++++++++++");
-                    System.out.println("Netatmo:" + OSContribute.getMeasurandsToContribute(
-                            OHItem.getMeasurandsFromOpenHab(), OSContribute.getMeasurandsFromOpenSense()));
-                    System.out.println("Sensor: " + measurandFromSensor);
-                    System.out.println("+++++++++++++++++");
-                    System.out.println("+++++++++++++++++");
                     boolean localMeasurandExists = OSContribute
                             .getMeasurandsToContribute(OHItem.getMeasurandsFromOpenHab(),
                                     OSContribute.getMeasurandsFromOpenSense())
@@ -263,16 +279,23 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                         String localSensorLink = OHItem.getLinkForMeasurand(measurand);
                         OSProperties.storeOpenHABLink(localSensorLink, measurand);
 
+                        // Post all collected local data to OS every x minutes
+                        // OSContribute.startPostSchedule(sensor_id, 1);
+
+                        ScheduledExecutorService new_scheduler = Executors.newSingleThreadScheduledExecutor();
+
                         int delay = Integer.parseInt(polling_interval) * 60;
-                        scheduler.scheduleWithFixedDelay(new Runnable() {
+                        System.out.println("Delay in seconds: " + delay);
+                        new_scheduler.scheduleWithFixedDelay(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    System.out.println("Update Call to Store Local Reading");
+                                    System.out.println("Call to add to local readings for SensorId: " + sensor_id);
 
                                     OHItem item = OHItem.getOHItemFromLink(localSensorLink);
                                     if (item != null) {
-                                        OSContribute.storeLocalReading(item, config.get("sensor_id").toString());
+                                        OSContribute.storeLocalReading(item, sensor_id);
+
                                     }
 
                                 } catch (Exception e) {
@@ -287,16 +310,6 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                 }
 
             }
-
-            System.out.println("---------------------------");
-            System.out.println("---------------------------");
-            System.out.println("---------------------------");
-            String measurand = OSSensor.getMeasurandNameFromSensor(config.get("sensor_id").toString());
-            System.out.println(measurand);
-            System.out.println(OHItem.getLinkForMeasurand(measurand));
-            System.out.println("---------------------------");
-            System.out.println("---------------------------");
-            System.out.println("---------------------------");
 
         }
 

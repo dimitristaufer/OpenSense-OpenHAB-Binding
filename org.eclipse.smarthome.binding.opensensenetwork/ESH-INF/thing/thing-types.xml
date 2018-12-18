@@ -108,19 +108,26 @@
         <label>Contribute Data to OpenSense</label>
         <description>Contribute weather and environmental data to OpenSense</description>
         
-        <!--
         <channel-groups>
-            <channel-group id="information" typeId="information">
-                <label>Current Information</label>
-                <description>This is the current temperature</description>
+            <channel-group id="sensor_id" typeId="sensor_id">
+                <label>Sensor ID</label>
+                <description>ID of the OpenSense Sensor</description>
+            </channel-group>
+            <channel-group id="last_update" typeId="last_update">
+                <label>Last Update</label>
+                <description>The last time, values were sent to OpenSense</description>
+            </channel-group>
+            <channel-group id="last_value" typeId="last_value">
+                <label>Last Value</label>
+                <description>The last value, which was sent to OpenSense</description>
             </channel-group>
         </channel-groups>
-        -->
         
         <config-description>
         
             <parameter name="username" required="true" type="text">
                 <label>Username</label>
+                <default>smarthome</default>
                 <description>Your OpenSense Username</description>
             </parameter>
             <parameter name="password" required="true" type="text">
@@ -130,6 +137,7 @@
             </parameter>
             <parameter name="sensor_id" required="true" type="text">
                 <label>Sensor ID</label>
+                <default>40549</default>
                 <description>Your Sensor ID which you created at https://opensense.network</description>
             </parameter>
             <parameter name="polling_interval" required="true" type="text">
@@ -415,7 +423,52 @@
         </channels>
     </channel-group-type>
     
+    <channel-group-type id="sensor_id">
+        <label>Sensor ID</label>
+        <description>ID of the OpenSense Sensor</description>
+        <channels>
+            <channel id="sensor_id_status" typeId="sensor_id_status"/>
+        </channels>
+    </channel-group-type>
     
+    <channel-group-type id="last_update">
+        <label>Last Update</label>
+        <description>The last time, values were sent to OpenSense</description>
+        <channels>
+            <channel id="last_update_status" typeId="last_update_status"/>
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="last_value">
+        <label>Last Value</label>
+        <description>The last value, which was sent to OpenSense</description>
+        <channels>
+            <channel id="last_value_status" typeId="last_value_status"/>
+        </channels>
+    </channel-group-type>
+    
+    
+    <!-- Contribute -->
+    <channel-type advanced="false" id="sensor_id_status">
+        <item-type>String</item-type>
+        <label>Sensor ID</label>
+        <state pattern="%s" readOnly="true"/>
+    </channel-type>
+    
+    <channel-type advanced="false" id="last_update_status">
+        <item-type>String</item-type>
+        <label>Last Update</label>
+        <state pattern="%s" readOnly="true"/>
+    </channel-type>
+    
+    <channel-type advanced="false" id="last_value_status">
+        <item-type>String</item-type>
+        <label>Last Value</label>
+        <state pattern="%s" readOnly="true"/>
+    </channel-type>
+    
+    
+    <!-- Receive -->
     <channel-type advanced="false" id="pm2_5_level">
         <item-type>Number</item-type>
         <label>pm2_5 Level</label>

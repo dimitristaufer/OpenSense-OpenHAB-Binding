@@ -4,9 +4,15 @@ import static org.eclipse.smarthome.binding.opensensenetwork.internal.OpenSenseN
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -19,6 +25,41 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 
 public class OSContribute {
+
+    static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    public static void startPostSchedule(String sensorId, int delay) {
+
+        int delaySeconds = delay * 60;
+
+        scheduler.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    File file = new File(OpenSenseNetworkHandler.class.getProtectionDomain().getCodeSource()
+                            .getLocation().getPath());
+                    String filePath = file.getAbsolutePath().concat("/ESH-INF/binding/").concat(sensorId)
+                            .concat(".json");
+                    JSONObject localReadings = getJSONfromFile(filePath);
+
+                    if (OSPostRequest.postMultipleValues(localReadings)) {
+                        // Delete local readings
+                        deleteJSONfromFile(filePath);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, delaySeconds, delaySeconds, TimeUnit.SECONDS); // Start after delaySeconds, every delaySeconds
+
+    }
+
+    public static void terminatePostSchedule(String sensorId) {
+        scheduler.shutdown();
+    }
+
     public static String getMeasurandsFromOpenSense() {
         try {
             HttpResponse<JsonNode> response = Unirest.get(OS_MEASURANDS_URL).asJson();
@@ -50,29 +91,52 @@ public class OSContribute {
 
     public static void storeLocalReading(OHItem item, String sensorId) {
         try {
-            HttpResponse<String> response = Unirest.get(item.getLink()).header("Accept", "application/json")
-                    .header("Authorization", "Basic bWF0ZW85NkBvMi5wbDpTbWFydEhvbWU=").asString();
-
-            JSONObject responseJson = new JSONObject(response.getBody());
-            OHValue ohValue = new OHValue(responseJson);
-            JSONObject json = new JSONObject();
-            JSONArray jsonArray = new JSONArray();
-            jsonArray.put(ohValue.getAsReadyToStore(sensorId));
-            json.append("collapsedMessages", jsonArray);
+            /* Local File Handling */
             File file = new File(
                     OpenSenseNetworkHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-            String filePath = file.getAbsolutePath().concat("/ESH-INF/binding/").concat(item.getLink());
-            writeJSONtoFile(json, filePath);
+            String filePath = file.getAbsolutePath().concat("/ESH-INF/binding/").concat(sensorId).concat(".json");
+            JSONObject objToWrite = new JSONObject();
+
+            /* New JSONObject to add to JSONArray */
+            JSONObject currentReading = item.getAsReadyToStore(sensorId);
+            System.out.println("currentRead: " + currentReading);
+            /* Handle already existing local readings */
+            JSONObject localReadings = getJSONfromFile(filePath);
+            System.out.println(localReadings);
+            if (localReadings == null) { // no readings exist
+                JSONArray collapsedMessages = new JSONArray();
+                collapsedMessages.put(currentReading);
+
+                objToWrite.put("collapsedMessages", collapsedMessages);
+                writeJSONtoFile(objToWrite, filePath);
+            } else { // readings exist
+                JSONArray collapsedMessages = localReadings.getJSONArray("collapsedMessages");
+                collapsedMessages.put(currentReading);
+
+                objToWrite.put("collapsedMessages", collapsedMessages);
+                writeJSONtoFile(objToWrite, filePath);
+            }
+
         } catch (Exception ex) {
-            // return ex.getMessage();
+            System.out.println("storeLocalReading ERROR");
         }
-        // TODO: 1) Take item.state and generate (correctly for Open Sense formatted) timestamp
 
-        // TODO: 2) Generate some sort of JSON entry
+    }
 
-        // TODO: 3) Store/Add to local JSON file using writeJSONtoFile()
+    public static JSONObject getLatestStoredLocalValue(String sensorId) throws JSONException, IOException {
 
-        // TODO: 4) Write a separate method, which can read the local JSON file and format it accordingly for Open Sense
+        File file = new File(
+                OpenSenseNetworkHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+        String filePath = file.getAbsolutePath().concat("/ESH-INF/binding/").concat(sensorId).concat(".json");
+        JSONObject localReadings = getJSONfromFile(filePath);
+
+        if (localReadings == null) {
+            return null;
+        } else {
+            JSONArray allReadings = localReadings.getJSONArray("collapsedMessages");
+            JSONObject lastReading = allReadings.getJSONObject(allReadings.length() - 1);
+            return lastReading;
+        }
 
     }
 
@@ -88,6 +152,30 @@ public class OSContribute {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static JSONObject getJSONfromFile(String filepath) throws JSONException, IOException {
+
+        File file = new File(filepath);
+        if (file.exists() && !file.isDirectory()) {
+            String content = new String(Files.readAllBytes(Paths.get(filepath)));
+            if (content.isEmpty() || content == "") {
+                return null;
+            } else {
+                JSONObject jObj = new ObjectMapper().readValue(content, JSONObject.class);
+                return jObj;
+            }
+        } else {
+            return null;
+        }
+
+    }
+
+    public static void deleteJSONfromFile(String filepath) throws JSONException, IOException {
+        File file = new File(filepath);
+        if (file.exists() && !file.isDirectory()) {
+            file.delete();
         }
     }
 

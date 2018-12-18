@@ -1,6 +1,5 @@
 package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -19,10 +18,6 @@ public class OSPostRequest {
     private final String sensorModel = null;
     private int licenseId;
     private int userId;
-
-    public static void main(String[] args) throws IOException {
-        PostValueToOSSensor(40549, 10);
-    }
 
     public OSPostRequest(int measurandId, int licenseId, int userId) {
         super();
@@ -46,38 +41,53 @@ public class OSPostRequest {
                     .asJson();
             return jsonResponse.getBody().getObject().get("id").toString();
         } catch (UnirestException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
-            return "Didnt work ohhhhhhhhhhh";
+            return "";
         }
 
     }
 
-    public static String PostValueToOSSensor(long id, double temperature) {
+    public static boolean postValue(int sensorId, double value) {
 
         try {
             JSONObject json = new JSONObject();
-            JSONArray jArr = new JSONArray();
             Date date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
-            json.put("sensorId", id);
+            json.put("sensorId", sensorId);
             json.put("timestamp", timestamp);
-            json.put("numberValue", temperature);
-            jArr.put(json);
+            json.put("numberValue", value);
             HttpResponse<String> request = Unirest
                     .post("https://www.opensense.network/progprak/beta/api/v1.0/sensors/addValue")
                     .header("Content-Type", "application/json").header("Accept", "application/json")
                     .header("Authorization", getAPIKey()).body(json).asString();
             System.out.println(request.getStatusText());
             if (request.getStatus() == 200) {
-                System.out.println("Sucessfully posted data");
-
+                System.out.println("Sucessfully posted value");
             }
-            return json.toString();
+            return true;
 
         } catch (UnirestException | JSONException je) {
             System.out.println(je.getMessage());
-            return "Failed to post.";
+            return false;
+        }
+    }
+
+    public static boolean postMultipleValues(JSONObject jObj) {
+
+        try {
+            HttpResponse<String> request = Unirest
+                    .post("https://www.opensense.network/progprak/beta/api/v1.0/sensors/addMultipleValues")
+                    .header("Content-Type", "application/json").header("Accept", "application/json")
+                    .header("Authorization", getAPIKey()).body(jObj).asString();
+            System.out.println(request.getStatusText());
+            if (request.getStatus() == 200) {
+                System.out.println("Sucessfully posted values");
+            }
+            return true;
+
+        } catch (UnirestException | JSONException je) {
+            System.out.println(je.getMessage());
+            return false;
         }
     }
 

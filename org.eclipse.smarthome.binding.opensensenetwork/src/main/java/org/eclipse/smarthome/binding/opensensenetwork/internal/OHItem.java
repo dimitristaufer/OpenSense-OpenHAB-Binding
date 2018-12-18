@@ -1,6 +1,8 @@
 package org.eclipse.smarthome.binding.opensensenetwork.internal;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +24,7 @@ public class OHItem {
     private final String category;
     private final ArrayList<String> tags;
     private final ArrayList<String> groupNames;
+    private final Timestamp timestamp;
 
     public OHItem(String link, String state, JSONObject stateDecription, Boolean editable, String type, String name,
             String label, String category, ArrayList<String> tags, ArrayList<String> groupNames) {
@@ -36,6 +39,7 @@ public class OHItem {
         this.category = category;
         this.tags = tags;
         this.groupNames = groupNames;
+        this.timestamp = new Timestamp(new Date().getTime());
     }
 
     public String getLink() {
@@ -76,6 +80,10 @@ public class OHItem {
 
     public ArrayList<String> getGroupNames() {
         return groupNames;
+    }
+
+    public Timestamp timestamp() {
+        return timestamp;
     }
 
     public static ArrayList<String> getMeasurandsFromOpenHab() {
@@ -127,13 +135,13 @@ public class OHItem {
         link = json.getString("link");
         state = json.getString("state");
         state = state.replaceAll("[^\\d.]", "");
-        System.out.println("state: " + state);
         if (state == "" || state == null || state.isEmpty() || state.replaceAll("[^.]", "").length() > 1) {
             state = "0.0";
         } else {
             float value = Float.parseFloat(state);
             state = String.format("%.2f", value);
         }
+        // System.out.println("Formatted state: " + state);
         stateDescription = json.has("stateDescription") ? (JSONObject) json.get("stateDescription") : null;
         editable = json.getBoolean("editable");
         type = json.getString("type");
@@ -184,4 +192,29 @@ public class OHItem {
         }
         return "";
     }
+
+    public JSONObject getAsJson() {
+        JSONObject json = new JSONObject();
+        json.put("link", link);
+        json.put("state", state);
+        json.put("stateDescription", stateDescription);
+        json.put("editable", editable);
+        json.put("type", type);
+        json.put("name", name);
+        json.put("label", label);
+        json.put("category", category);
+        json.put("tags", tags);
+        json.put("groupNames", groupNames);
+        json.put("timeStamp", timestamp);
+        return json;
+    }
+
+    public JSONObject getAsReadyToStore(String osSensorId) {
+        JSONObject json = new JSONObject();
+        json.put("sensorId", Integer.parseInt(osSensorId));
+        json.put("timestamp", timestamp);
+        json.put("numberValue", Double.parseDouble(state));
+        return json;
+    }
+
 }

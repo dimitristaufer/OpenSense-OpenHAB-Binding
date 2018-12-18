@@ -65,8 +65,6 @@ public class OSSensor {
 
     public static OSSensor getClosest(String lt, String lg, String measurand) {
 
-        System.out.println("Min Acc: " + OSProperties.minAccuracy().toString());
-
         String refPoint = String.format("(%s, %s)", lt, lg);
 
         HttpResponse<JsonNode> response;
