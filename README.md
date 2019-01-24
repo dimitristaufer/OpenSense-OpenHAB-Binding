@@ -8,8 +8,8 @@ An attempt to extent [ISE's](http://www.ise.tu-berlin.de/menue/information_syste
 
 # OpenSense.network 👉 openHAB 
 
-Example #1: Ich wohne in einer Großstadt. Es ist daher für meine Gesundheit wichtig, mehrmals täglich meine Wohnung zu lüften. 
+Description and Screenshots will be added here. 
 
 # openHAB 👉 OpenSense.network 
 
-Example #1: Aufgrund meiner Arbeit werde ich zu beginn des kommenden Jahres in eine Großstadt ziehen. Bei der Wohnungssuche 
+Description and Screenshots will be added here. 
