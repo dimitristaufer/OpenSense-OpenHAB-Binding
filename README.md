@@ -1,4 +1,4 @@
-# OpenSense.network Binding (openHAB 2)
+# OpenSense.network 🌧🌦☀️ - openHab2 Binding
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/dimitristaufer/opensense-openhab-master.svg?columns=all)](https://waffle.io/dimitristaufer/opensense-openhab-master)
 
