@@ -4,6 +4,18 @@ import java.text.DecimalFormat;
 
 import org.json.JSONObject;
 
+/**
+ * @author Dimitri Jan Staufer
+ * @author Mateusz Kedzierski
+ * @author Maksym Koliesnikov
+ * @author Manisha Nagbanshi
+ * @author Roman Zabrovarny
+ *
+ *         OSValue is a local representation of a value on opensense.network.
+ *         It also includes methods to store itself locally as a JSON formatted String.
+ *
+ */
+
 public class OSValue {
 
     private double numberValue;
@@ -54,9 +66,6 @@ public class OSValue {
     }
 
     public static OSValue makeValue(JSONObject json) {
-
-        // System.out.println("Value Make");
-        // System.out.println(json);
 
         JSONObject values = json.getJSONArray("values").getJSONObject(0);
         JSONObject loc = json.optJSONObject("location");

@@ -12,23 +12,34 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+/**
+ * @author Dimitri Jan Staufer
+ * @author Mateusz Kedzierski
+ * @author Maksym Koliesnikov
+ * @author Manisha Nagbanshi
+ * @author Roman Zabrovarny
+ *
+ *         OSProperties stores and reads various properties in order for our Binding to function.
+ *         It uses the built in Preferences class for reads and writes to local storage.
+ *
+ */
+
 public class OSProperties {
 
     private static Preferences prefs;
 
     /* TODO: Add timeout for values */
-
-    public static String validateAndRemoveTimestamp(String value) {
-
-        // FORMAT: VALUE#TIMESTAMP
-
-        return null;
-    }
-
-    private void removeValue(String key) {
-        prefs = Preferences.userRoot().node(BINDING_ID);
-        prefs.remove(key);
-    }
+    /*
+     * public static String validateAndRemoveTimestamp(String value) {
+     * // FORMAT: VALUE#TIMESTAMP
+     * return null;
+     * }
+     *
+     * private void removeValue(String key) {
+     * prefs = Preferences.userRoot().node(BINDING_ID);
+     * prefs.remove(key);
+     * }
+     */
 
     public static void removeAllValues() {
 

@@ -23,8 +23,13 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
  * The {@link OpenSenseNetworkBindingConstants} class defines common constants, which are
  * used across the whole binding.
  *
- * @author ISE - Initial contribution
+ * @author Dimitri Jan Staufer
+ * @author Mateusz Kedzierski
+ * @author Maksym Koliesnikov
+ * @author Manisha Nagbanshi
+ * @author Roman Zabrovarny
  */
+
 @NonNullByDefault
 public class OpenSenseNetworkBindingConstants {
 
@@ -36,19 +41,19 @@ public class OpenSenseNetworkBindingConstants {
 
     public static final Boolean SERVER_ONLY_MODE = true;
 
-    // List of all Channel ids
-    // public static final String CHANNEL_TEMPERATURE = "temperature";
-    // public static final String CHANNEL_HUMIDITY = "humidity";
-
-    // public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(THING_TYPE_WEATHER);
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = new HashSet<>(
             Arrays.asList(THING_TYPE_RECEIVE, THING_TYPE_CONTRIBUTE));
 
     public static final String OS_BASE_URL = "https://www.opensense.network/progprak/beta/api/v1.0/";
+    // public static final String OS_BASE_URL = "https://www.opensense.network/beta/api/v1.0/";
+
     public static final String OS_VALUE_URL = "values";
-    public static final String OS_MEASURANDS_URL = "https://www.opensense.network/progprak/beta/api/v1.0/measurands";
-    public static final String OS_SENSOR_URL = "https://www.opensense.network/progprak/beta/api/v1.0/sensors";
-    public static final String OS_LATEST_URL = "https://www.opensense.network/progprak/beta/api/v1.0/sensors/SENSORID/values/last";
-    public static final String OS_OLDEST_URL = "https://www.opensense.network/progprak/beta/api/v1.0/sensors/SENSORID/values/first";
+    public static final String OS_MEASURANDS_URL = OS_BASE_URL + "measurands";
+    public static final String OS_SENSOR_URL = OS_BASE_URL + "sensors";
+    public static final String OS_LATEST_URL = OS_BASE_URL + "sensors/SENSORID/values/last";
+    public static final String OS_OLDEST_URL = OS_BASE_URL + "sensors/SENSORID/values/first";
+    public static final String OS_POST_LOGIN = OS_BASE_URL + "users/login";
+    public static final String OS_POST_ADDVALUE = OS_BASE_URL + "sensors/addValue";
+    public static final String OS_POST_ADDMULTIPLEVALUES = OS_BASE_URL + "sensors/addMultipleValues";
 
 }

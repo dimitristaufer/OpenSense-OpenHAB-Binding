@@ -13,6 +13,19 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+/**
+ * @author Dimitri Jan Staufer
+ * @author Mateusz Kedzierski
+ * @author Maksym Koliesnikov
+ * @author Manisha Nagbanshi
+ * @author Roman Zabrovarny
+ *
+ *         OHItem can represent any type of openHAB channel.
+ *         It is used for data collection of other openHAB Bindings (ex. Netatmo Weather Station).
+ *         This collected data can be contributed to OpenSense.network
+ *
+ */
+
 public class OHItem {
     private final String link;
     private final String state;

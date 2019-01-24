@@ -29,7 +29,12 @@ import org.osgi.service.component.annotations.Component;
  * The {@link OpenSenseNetworkHandlerFactory} is responsible for creating things and thing
  * handlers.
  *
- * @author ISE - Initial contribution
+ * @author Dimitri Jan Staufer
+ * @author Mateusz Kedzierski
+ * @author Maksym Koliesnikov
+ * @author Manisha Nagbanshi
+ * @author Roman Zabrovarny
+ *
  */
 @NonNullByDefault
 @Component(configurationPid = "binding.opensensenetwork", service = ThingHandlerFactory.class)

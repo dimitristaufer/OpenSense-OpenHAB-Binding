@@ -51,10 +51,14 @@ import com.mashape.unirest.http.exceptions.UnirestException;
  * ERROR -> Error logs only
  * OFF -> No logs
  *
+ * @author Dimitri Jan Staufer
+ * @author Mateusz Kedzierski
+ * @author Maksym Koliesnikov
+ * @author Manisha Nagbanshi
+ * @author Roman Zabrovarny
  *
- *
- * @author ISE - Initial contribution
  */
+
 @NonNullByDefault
 @SuppressWarnings("deprecation")
 public class OpenSenseNetworkHandler extends BaseThingHandler {
@@ -95,7 +99,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
             offAllChannels(baseId);
 
             OSSensor sensor = OSSensor.getSensorForMeasurand(groupId);
-            // System.out.println("Updating Channel: '" + groupId + "' using Sensor:" + sensor.toString());
+            System.out.println("Updating Channel: '" + groupId + "' using Sensor:" + sensor.toString());
             updateChannels(getCurrentValue(sensor), baseId);
 
         } else if (thingType.equals("contribute")) {
@@ -280,7 +284,7 @@ public class OpenSenseNetworkHandler extends BaseThingHandler {
                         OSProperties.storeOpenHABLink(localSensorLink, measurand);
 
                         // Post all collected local data to OS every x minutes
-                        // OSContribute.startPostSchedule(sensor_id, 1);
+                        OSContribute.startPostSchedule(sensor_id, 1);
 
                         ScheduledExecutorService new_scheduler = Executors.newSingleThreadScheduledExecutor();
 

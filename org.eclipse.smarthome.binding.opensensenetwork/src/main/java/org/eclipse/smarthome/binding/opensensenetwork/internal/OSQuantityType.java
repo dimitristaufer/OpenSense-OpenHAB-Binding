@@ -14,6 +14,17 @@ import org.eclipse.smarthome.core.library.types.QuantityType;
 import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 
+/**
+ * @author Dimitri Jan Staufer
+ * @author Mateusz Kedzierski
+ * @author Maksym Koliesnikov
+ * @author Manisha Nagbanshi
+ * @author Roman Zabrovarny
+ *
+ *         OSQuantityType is a mapping from opensense.network's measurandId to Eclipse SmartHomeUnits.
+ *
+ */
+
 public class OSQuantityType {
 
     @SuppressWarnings("rawtypes")
@@ -64,30 +75,5 @@ public class OSQuantityType {
                 QuantityType<Dimensionless> none = new QuantityType<Dimensionless>(value, SmartHomeUnits.PERCENT);
                 return none;
         }
-
     }
-
-    /*
-     * ArithmeticGroupFunction.java
-     * DateTimeGroupFunction.java
-     * DateTimeType.java
-     * DecimalType.java
-     * HSBType.java
-     * IncreaseDecreaseType.java
-     * NextPreviousType.java
-     * OnOffType.java
-     * OpenClosedType.java
-     * PercentType.java
-     * PlayPauseType.java
-     * PointType.java
-     * QuantityType.java
-     * QuantityTypeArithmeticGroupFunction.java
-     * RawType.java
-     * RewindFastforwardType.java
-     * StopMoveType.java
-     * StringListType.java
-     * StringType.java
-     * UpDownType.java
-     */
-
 }

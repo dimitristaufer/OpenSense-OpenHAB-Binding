@@ -24,6 +24,18 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 
+/**
+ * @author Dimitri Jan Staufer
+ * @author Mateusz Kedzierski
+ * @author Maksym Koliesnikov
+ * @author Manisha Nagbanshi
+ * @author Roman Zabrovarny
+ *
+ *         OSContribute manages and schedules the collection of local sensor data from openHAB channels
+ *         It also formats JSON files which are passed on to OSPostRequest for POSTing to opensense.network
+ *
+ */
+
 public class OSContribute {
 
     static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();

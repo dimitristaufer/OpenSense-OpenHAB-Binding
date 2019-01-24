@@ -44,7 +44,17 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 /**
  * The {@link OpenSenseNetworkConfiguration} class contains fields mapping thing configuration parameters.
  *
- * @author ISE - Initial contribution
+ * OpenSenseNetworkConfiguration was supposed to modify the bindings configuration file at runtime, which caused several
+ * errors.
+ *
+ * IT IS CURRENTLY NOT BEEING USED FOR ANYTHING - TESTING ONLY
+ *
+ *
+ * @author Dimitri Jan Staufer
+ * @author Mateusz Kedzierski
+ * @author Maksym Koliesnikov
+ * @author Manisha Nagbanshi
+ * @author Roman Zabrovarny
  */
 public class OpenSenseNetworkConfiguration {
 

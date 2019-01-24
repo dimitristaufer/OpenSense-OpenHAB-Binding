@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
 
 	<name>OpenSenseNetwork Binding</name>
-	<description>This binding provides a link between the OpenSense network and many devices supported by openHAB. Further description is necessary.</description>
+	<description>This binding provides a link between OpenSense.network and several weather data based IoT devices supported by openHAB.  You can either receive weather and environmental data from all around the world, or automatically contribute your own data.</description>
 	<author>ISE</author>
 
 </binding:binding>

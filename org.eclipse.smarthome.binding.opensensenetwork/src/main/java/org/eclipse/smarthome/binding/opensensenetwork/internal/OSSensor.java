@@ -12,6 +12,20 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+/**
+ * @author Dimitri Jan Staufer
+ * @author Mateusz Kedzierski
+ * @author Maksym Koliesnikov
+ * @author Manisha Nagbanshi
+ * @author Roman Zabrovarny
+ *
+ *         OSSensor is a local representation of a sensor on opensense.network.
+ *         It also includes methods to fetch sensors from opensense.network and store itself locally as JSON formatted
+ *         String.
+ *
+ *
+ */
+
 public class OSSensor {
 
     private final int id;
@@ -76,8 +90,6 @@ public class OSSensor {
 
             JSONObject json = response.getBody().getArray().getJSONObject(0);
 
-            System.out.println("Nearest Sensor here:" + json);
-
             // Store SensorID for future reference in preferences
             String sensorId = String.format("%d", json.optInt("id", -1));
             OSProperties.storeSensorID(measurand, sensorId);
@@ -113,9 +125,6 @@ public class OSSensor {
     }
 
     public static OSSensor makeSensor(JSONObject json, String sensorId) {
-
-        // System.out.println("Sensor Make");
-        // System.out.println(json);
 
         JSONObject location = json.optJSONObject("location");
 
